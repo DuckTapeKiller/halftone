@@ -12,10 +12,7 @@
   <img alt="No network requests" src="https://img.shields.io/badge/network%20requests-none-1E201F?style=flat-square">
 </p>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="screenshots/hero-dark.png">
-  <img alt="Halftone on sage paper: a note titled Halftone inside crop marks, a Properties window with a black title bar, a teal highlight, black inline code, and the file explorer with dotted guide lines" src="screenshots/hero-light.png">
-</picture>
+<img alt="Halftone on sage paper: a note titled Halftone inside crop marks, a Properties window with a black title bar, a teal highlight, black inline code, and the file explorer with dotted guide lines" src="screenshot.png">
 
 ## Contents
 
@@ -55,7 +52,7 @@
 
 <table>
   <tr>
-    <td width="50%"><img alt="Halftone in light mode on sage paper" src="screenshots/hero-light.png"></td>
+    <td width="50%"><img alt="Halftone in light mode on sage paper" src="screenshot.png"></td>
     <td width="50%"><img alt="Halftone in dark mode: graphite paper, sage text and a teal active file" src="screenshots/hero-dark.png"></td>
   </tr>
   <tr>
