@@ -1822,10 +1822,6 @@ body.hf-no-dots .markdown-source-view.mod-cm6 hr {
   image-rendering: pixelated;
 }
 
-.modal-container .modal-bg {
-  opacity: 1 !important;
-}
-
 .modal {
   padding-top: calc(var(--hf-bar-height) + var(--size-4-4));
 }
@@ -1958,7 +1954,6 @@ kbd {
 .suggestion-highlight {
   color: inherit;
   text-decoration: underline;
-  text-decoration-thickness: 1.5px;
   text-underline-offset: 2px;
 }
 
@@ -2535,29 +2530,24 @@ body.hf-headings-ui {
 }
 
 /* Vault switcher and phone drawer: a squirrel for Settings, a candy cane for Help.
-   The original icon is hidden and the new one drawn as a mask, so it takes the icon colour in every state. */
-.workspace-drawer-vault-actions .clickable-icon:has(> svg.lucide-settings),
-.workspace-drawer-header .clickable-icon:has(> svg.lucide-settings) {
+   The icon's own strokes are hidden and its box painted through the new shape as a mask,
+   so it takes the icon colour in every state. */
+.workspace-drawer-vault-actions .clickable-icon > svg.lucide-settings,
+.workspace-drawer-header .clickable-icon > svg.lucide-settings {
   --hf-icon-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15.236 22a3 3 0 0 0-2.2-5'/%3E%3Cpath d='M16 20a3 3 0 0 1 3-3h1a2 2 0 0 0 2-2v-2a4 4 0 0 0-4-4V4'/%3E%3Cpath d='M18 13h.01'/%3E%3Cpath d='M18 6a4 4 0 0 0-4 4 7 7 0 0 0-7 7c0-5 4-5 4-10.5a4.5 4.5 0 1 0-9 0 2.5 2.5 0 0 0 5 0C7 10 3 11 3 17c0 2.8 2.2 5 5 5h10'/%3E%3C/svg%3E");
 }
 
-.workspace-drawer-vault-actions .clickable-icon:has(> svg.help),
-.workspace-drawer-vault-actions .clickable-icon:has(> svg.lucide-help-circle),
-.workspace-drawer-vault-actions .clickable-icon:has(> svg.lucide-circle-help) {
+.workspace-drawer-vault-actions .clickable-icon > svg:is(.help, .lucide-help-circle, .lucide-circle-help) {
   --hf-icon-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m10.8 5 2.111 4.223'/%3E%3Cpath d='M17.75 7 15 2.1'/%3E%3Cpath d='m4.874 14.647 2.12 4.24'/%3E%3Cpath d='M5.7 21a2 2 0 0 1-3.5-2l8.6-14a6 6 0 0 1 10.4 6 2 2 0 1 1-3.464-2 2 2 0 1 0-3.464-2z'/%3E%3Cpath d='m7.906 9.712 2.005 4.411'/%3E%3C/svg%3E");
 }
 
-.workspace-drawer-vault-actions .clickable-icon:has(> svg:is(.lucide-settings, .help, .lucide-help-circle, .lucide-circle-help)) > svg,
-.workspace-drawer-header .clickable-icon:has(> svg.lucide-settings) > svg {
+.workspace-drawer-vault-actions .clickable-icon > svg:is(.lucide-settings, .help, .lucide-help-circle, .lucide-circle-help) > *,
+.workspace-drawer-header .clickable-icon > svg.lucide-settings > * {
   display: none;
 }
 
-.workspace-drawer-vault-actions .clickable-icon:has(> svg:is(.lucide-settings, .help, .lucide-help-circle, .lucide-circle-help))::before,
-.workspace-drawer-header .clickable-icon:has(> svg.lucide-settings)::before {
-  content: "";
-  display: block;
-  width: var(--icon-size);
-  height: var(--icon-size);
+.workspace-drawer-vault-actions .clickable-icon > svg:is(.lucide-settings, .help, .lucide-help-circle, .lucide-circle-help),
+.workspace-drawer-header .clickable-icon > svg.lucide-settings {
   background-color: currentColor;
   -webkit-mask: var(--hf-icon-mask) center / contain no-repeat;
   mask: var(--hf-icon-mask) center / contain no-repeat;
@@ -2685,7 +2675,6 @@ body.is-mobile .dashboard .markdown-preview-section {
   padding-top: var(--hf-dashboard-gap);
 }
 
-/* Obsidian writes the sizer's padding-bottom inline, hence the !important */
 .markdown-preview-view.dashboard .markdown-preview-section {
   --hf-dashboard-cards: 99;
   --hf-dashboard-step: calc(var(--hf-dashboard-col-width) + var(--hf-dashboard-gap));
@@ -2693,12 +2682,10 @@ body.is-mobile .dashboard .markdown-preview-section {
   columns: var(--hf-dashboard-col-width) auto;
   column-gap: var(--hf-dashboard-gap);
   box-sizing: border-box;
-  width: 100%;
   width: calc(var(--hf-dashboard-gap) + max(var(--hf-dashboard-step), min(var(--hf-dashboard-cards) * var(--hf-dashboard-step), round(down, min(100%, var(--hf-dashboard-max-width)) - var(--hf-dashboard-gap), var(--hf-dashboard-step)))));
-  max-width: 100% !important;
+  max-width: 100%;
   margin: 0 auto;
   padding-inline: var(--hf-dashboard-gap);
-  padding-bottom: 150px !important;
 }
 
 /* The cap above: the most cards in one unbroken run. A heading or text between
@@ -2718,8 +2705,9 @@ body.is-mobile .dashboard .markdown-preview-section {
 .markdown-preview-view.dashboard .markdown-preview-section:has(> .el-div + .el-div + .el-div + .el-div + .el-div + .el-div + .el-div + .el-div + .el-div + .el-div + .el-div + .el-div + .el-div) { --hf-dashboard-cards: 99; }
 
 /* Everything that is not a card spans all columns: the spacer, header, frontmatter
-   and footer, and any heading or text written between cards */
-.markdown-preview-view.dashboard .markdown-preview-section > :not(:has(> .callout)) {
+   and footer, and any heading or text written between cards. Reading view wraps each
+   callout in an .el-div block. */
+.markdown-preview-view.dashboard .markdown-preview-section > :not(.el-div) {
   column-span: all;
 }
 
@@ -2755,11 +2743,13 @@ body.is-mobile .dashboard .markdown-preview-section {
 }
 
 /* Live Preview stays one column: the blank lines between callouts are editable
-   lines. Obsidian zeroes margins on the editor's children with !important, so the
-   centring margins need it too. */
+   lines. Obsidian zeroes the margins of the editor's blocks, so the cards are
+   centred by position instead. */
 .markdown-source-view.dashboard .cm-embed-block.cm-callout {
+  position: relative;
+  left: 50%;
   max-width: var(--hf-dashboard-col-width);
-  margin-inline: auto !important;
+  translate: -50% 0;
   overflow: visible;
 }
 
@@ -2829,7 +2819,6 @@ body.is-mobile .dashboard .markdown-preview-section {
 .markdown-preview-view.custom-timeline ul:not(ul ul) {
   display: grid;
   grid-template-columns: var(--hf-tl-date-width) 1fr;
-  column-gap: 0;
   list-style: none;
   margin: 0;
   padding: 2rem 1rem;
