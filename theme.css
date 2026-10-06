@@ -171,13 +171,15 @@ body.is-mobile {
   --hf-crop-weight: 1.5px;
   --hf-blob-opacity: 0.6;
 
-  /* Sidebar trees: guide lines under open folders, and the folder dot that replaces the chevron.
-     The guide and glow colours are set per paper below; the dot takes the row's text colour. */
+  /* Sidebar trees: guide lines under open folders. Dots: every chevron in the app is drawn
+     as a dot instead, lit while what it opens is open. The guide and glow colours are set
+     per paper below; a dot takes the text colour around it. */
   --hf-guide-width: 2px;
   --hf-guide-style: dotted;
-  --hf-folder-dot-size: 6px;
-  --hf-folder-dot-color: currentColor;
-  --hf-folder-dot-glow: 0 0 3px 1px var(--hf-folder-dot-glow-color), 0 0 8px 2px var(--hf-folder-dot-glow-color);
+  --hf-dot-size: 6px;
+  --hf-dot-color: currentColor;
+  --hf-dot-glow: 0 0 3px 1px var(--hf-dot-glow-color), 0 0 8px 2px var(--hf-dot-glow-color);
+  --hf-dot-glow-filter: drop-shadow(0 0 2px var(--hf-dot-glow-color)) drop-shadow(0 0 4px var(--hf-dot-glow-color));
 
   /* Section 11: square scrollbars, the dashboard and timeline cssclasses */
   --hf-scrollbar-size: 8px;
@@ -323,7 +325,7 @@ body.is-mobile {
   --hf-tag-text-hover: var(--hf-black);
   --hf-selection: rgba(10, 176, 163, 0.45);
   --hf-guide-color: var(--hf-raspberry);
-  --hf-folder-dot-glow-color: var(--hf-pink);
+  --hf-dot-glow-color: var(--hf-pink);
   --hf-error: #7A1530;
   --hf-cover: rgba(39, 42, 41, 0.2);
 
@@ -407,7 +409,7 @@ body.is-mobile {
   --hf-tag-text-hover: var(--hf-plum);
   --hf-selection: rgba(10, 176, 163, 0.35);
   --hf-guide-color: var(--hf-sage);
-  --hf-folder-dot-glow-color: var(--hf-guide-color);
+  --hf-dot-glow-color: var(--hf-guide-color);
   --hf-error: #E38AA6;
   --hf-cover: rgba(18, 20, 19, 0.55);
 
@@ -480,7 +482,7 @@ body.theme-light.hf-paper-white {
 /* A pink glow vanishes on pink paper */
 body.theme-light.hf-paper-pink {
   --hf-guide-color: var(--hf-maroon);
-  --hf-folder-dot-glow-color: var(--hf-maroon);
+  --hf-dot-glow-color: var(--hf-maroon);
 }
 
 body.theme-light.hf-paper-white {
@@ -1271,28 +1273,97 @@ body.hf-gaps:not(.is-popout-window) .workspace .workspace-tab-header-container .
   margin-inline-start: calc(var(--nav-item-children-margin-start, var(--size-4-3)) - var(--hf-guide-width) / 2);
 }
 
-/* Folders: a dot instead of the chevron, lit while the folder is open */
-.nav-folder-title .collapse-icon {
+/* ---------- No chevrons: every one is a dot ----------
+   Fold toggles (folders and every other tree, properties, headings, lists, callouts,
+   details) are dots lit while open. Collapsed state sits on the toggle itself or on an
+   ancestor (.is-collapsed), so the lit rule is undone by either. */
+.tree-item-self .collapse-icon {
   color: inherit;
   opacity: 1;
 }
 
-.nav-folder-title .collapse-icon svg.svg-icon {
+:is(.collapse-icon, .callout-fold) {
+  justify-content: center;
+}
+
+:is(.collapse-icon, .callout-fold) svg.svg-icon {
   display: none;
 }
 
-.nav-folder-title .collapse-icon::after {
+:is(.collapse-icon, .callout-fold)::after {
   content: "";
   flex: none;
-  width: var(--hf-folder-dot-size);
-  height: var(--hf-folder-dot-size);
+  width: var(--hf-dot-size);
+  height: var(--hf-dot-size);
   border-radius: 50%;
-  background-color: var(--hf-folder-dot-color);
+  background-color: var(--hf-dot-color);
+  box-shadow: var(--hf-dot-glow);
   transition: box-shadow 150ms ease-in-out;
 }
 
-.nav-folder-title .collapse-icon:not(.is-collapsed)::after {
-  box-shadow: var(--hf-folder-dot-glow);
+:is(.collapse-icon.is-collapsed, .is-collapsed .collapse-icon, .callout-fold.is-collapsed)::after {
+  box-shadow: none;
+}
+
+/* Live Preview headings: Obsidian's padding was sized for the wider chevron */
+.markdown-source-view.mod-cm6 .HyperMD-header .cm-fold-indicator .collapse-indicator {
+  padding-inline-end: 12px;
+}
+
+/* HTML details: the disclosure triangle becomes the same dot */
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+details > summary::before {
+  content: "";
+  display: inline-block;
+  width: var(--hf-dot-size);
+  height: var(--hf-dot-size);
+  margin-inline-end: 0.55em;
+  border-radius: 50%;
+  background-color: var(--hf-dot-color);
+  vertical-align: 0.12em;
+  transition: box-shadow 150ms ease-in-out;
+}
+
+details[open] > summary::before {
+  box-shadow: var(--hf-dot-glow);
+}
+
+/* Menus and pickers: the chevron icon itself is cleared and painted with a dot,
+   lit while hovered or while its menu is open. The collapse-all button is lit while
+   anything is open, which is when it reads "collapse all". */
+:is(.workspace-drawer-vault-switcher-icon, .workspace-tab-header-tab-list, .menu-item-icon.mod-submenu, .setting-item-chevron, .vertical-tab-nav-item-chevron, .bases-toolbar .text-button-icon.mod-aux) svg.svg-icon,
+.nav-action-button > svg.svg-icon:is(.lucide-chevrons-down-up, .lucide-chevrons-up-down) {
+  background-image: radial-gradient(circle, var(--hf-dot-color) calc(var(--hf-dot-size) / 2 - 0.5px), transparent calc(var(--hf-dot-size) / 2));
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: filter 150ms ease-in-out;
+}
+
+:is(.workspace-drawer-vault-switcher-icon, .workspace-tab-header-tab-list, .menu-item-icon.mod-submenu, .setting-item-chevron, .vertical-tab-nav-item-chevron, .bases-toolbar .text-button-icon.mod-aux) svg.svg-icon > *,
+.nav-action-button > svg.svg-icon:is(.lucide-chevrons-down-up, .lucide-chevrons-up-down) > * {
+  display: none;
+}
+
+:is(.workspace-drawer-vault-switcher:hover, .workspace-drawer-vault-switcher.has-active-menu, .workspace-tab-header-tab-list:hover, .workspace-tab-header-tab-list .has-active-menu, .menu-item.selected, .menu-item.has-submenu.is-active, .setting-item.mod-navigable:hover, .vertical-tab-nav-item:hover, .bases-toolbar .text-icon-button:hover, .bases-toolbar .text-icon-button.has-active-menu) :is(.workspace-drawer-vault-switcher-icon, .workspace-tab-header-tab-list, .menu-item-icon.mod-submenu, .setting-item-chevron, .vertical-tab-nav-item-chevron, .text-button-icon.mod-aux) svg.svg-icon,
+.workspace-tab-header-tab-list :is(:hover, .has-active-menu) > svg.svg-icon,
+.nav-action-button > svg.svg-icon.lucide-chevrons-down-up {
+  filter: var(--hf-dot-glow-filter);
+}
+
+/* Dropdowns: the chevron drawn in the background becomes a dot (Obsidian redraws it for dark mode) */
+:is(.theme-light, .theme-dark) .dropdown {
+  background-image: radial-gradient(circle, var(--hf-dot-color) calc(var(--hf-dot-size) / 2 - 0.5px), transparent calc(var(--hf-dot-size) / 2));
+  background-position: right 0.95em center;
+  background-size: calc(var(--hf-dot-size) + 2px) calc(var(--hf-dot-size) + 2px);
+  background-repeat: no-repeat;
+  background-blend-mode: normal;
 }
 
 .tree-item-self.is-active,
@@ -2911,7 +2982,7 @@ body.is-mobile .dashboard .markdown-preview-section {
 
 .markdown-preview-view.custom-timeline ul:not(ul ul) > li:nth-child(3n+1):hover::before {
   transform: translateX(50%) scale(1.3);
-  box-shadow: var(--hf-folder-dot-glow);
+  box-shadow: var(--hf-dot-glow);
 }
 
 /* Entrance: titles and text slide in */

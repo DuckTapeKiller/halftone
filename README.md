@@ -43,7 +43,7 @@
 - **Three papers for light mode**: sage (the default), pink, or white windows on a pink desk. Dark mode has its own palette rather than an inverted one.
 - **Real halftone**: the dots snap to whole screen pixels at every zoom level and screen density, so the grid stays even and never shimmers.
 - **Square and flat**: no rounded corners and no shadows, anywhere.
-- **A file explorer with character**: folders open with a glowing dot instead of a chevron, and their contents hang from dotted guide lines.
+- **No chevrons**: every chevron in Obsidian becomes a dot, lit while what it opens is open. Folders hang their contents from dotted guide lines.
 - **Dashboards and timelines** from plain Markdown, switched on per note with `cssclasses`.
 - **Adjustable note width**: a slider for every note, and classes for single notes.
 - **Self-contained**: the fonts are embedded and the theme makes no network requests.
@@ -96,6 +96,13 @@ The note itself reads like a printed page, and everything around it looks like t
 </p>
 
 Folders show a small dot instead of the chevron. The dot takes the colour of the folder's name and glows while the folder is open, so you can see at a glance what is expanded.
+
+The same dot replaces every other chevron in Obsidian:
+
+- **Fold toggles** for headings, lists, callouts, the properties block, HTML `<details>`, and every tree (outline, bookmarks, tags, search and backlinks). The dot glows while the section is open.
+- **Menus and pickers**: the vault switcher, the tab list, submenus, navigable rows in Settings and the Bases views menu. The dot glows while you point at it or its menu is open.
+- **Collapse all**: the explorer's button glows while anything is open, which is when it collapses everything.
+- **Dropdowns** end in a dot instead of an arrow.
 
 Open folders hang their contents from dotted guide lines: raspberry on sage paper, maroon on pink paper and sage in dark mode. Bookmarks, the outline and search results get the same dotted guides.
 
@@ -268,9 +275,9 @@ html body.theme-dark {
 | --- | --- | --- |
 | `--hf-guide-color` | File-tree guide lines and the timeline spine | raspberry `#9D2645`, maroon on pink paper, sage in dark mode |
 | `--hf-guide-width`, `--hf-guide-style` | How the guide lines are drawn | `2px`, `dotted` |
-| `--hf-folder-dot-size` | The dot beside each folder | `6px` |
-| `--hf-folder-dot-color` | Its colour | the folder name's colour |
-| `--hf-folder-dot-glow-color` | Its glow while the folder is open | pink, maroon on pink paper, sage in dark mode |
+| `--hf-dot-size` | Every dot that replaces a chevron | `6px` |
+| `--hf-dot-color` | Its colour | the colour of the text around it |
+| `--hf-dot-glow-color` | Its glow while open | pink, maroon on pink paper, sage in dark mode |
 | `--hf-blob-opacity` | The halftone on a new tab, from `0` to `1` | `0.6` |
 | `--hf-scrollbar-size` | Scrollbar thickness | `8px` |
 | `--hf-note-width` | Note width with *Readable line length* on | `720px` |
