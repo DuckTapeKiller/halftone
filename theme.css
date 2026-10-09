@@ -90,11 +90,20 @@ settings:
     -
         id: hf-marker
         title: Fold marker
-        description: The mark that replaces every chevron, on folders and other trees, headings, lists, callouts, Properties, details blocks, menus, pickers and dropdowns. It glows while what it opens is open
+        description: The mark that replaces every chevron, on folders and other trees, headings, lists, callouts, Properties, details blocks, menus, pickers and dropdowns. It changes colour while what it opens is open; the line also widens, and the eye opens
         type: class-select
         allowEmpty: false
-        default: hf-marker-ellipsis
+        default: hf-marker-line
         options:
+            -
+                label: Line (default)
+                value: hf-marker-line
+            -
+                label: Small circle
+                value: hf-marker-circle
+            -
+                label: Eye, shut while folded
+                value: hf-marker-eye
             -
                 label: Three vertical dots
                 value: hf-marker-ellipsis
@@ -177,7 +186,8 @@ body.is-mobile {
   --hf-lineart: #A4B0AE;
   --hf-blush: #FBD5DE;
   --hf-mist: #DDE4E3;
-  --hf-raspberry: #9D2645;
+  /* The teal, inked darker so it reads on the light papers */
+  --hf-teal-ink: #08857B;
 
   --hf-font-ui: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
   --hf-font-body: "Nunito Sans", "Helvetica Neue", Arial, sans-serif;
@@ -198,21 +208,23 @@ body.is-mobile {
   --hf-blob-opacity: 0.6;
 
   /* Sidebar trees: guide lines under open folders. Markers: every chevron in the app is
-     drawn as a marker instead, lit while what it opens is open. The guide and glow colours
-     are set per paper below; a marker takes the text colour around it. */
+     drawn as a marker instead, lit while what it opens is open. The guide and lit colours
+     are set per paper below; at rest a marker takes the text colour around it. */
   --hf-guide-width: 2px;
   --hf-guide-style: dotted;
   --hf-dot-size: 6px;
   --hf-dot-color: currentColor;
   --hf-dot-glow: 0 0 3px 1px var(--hf-dot-glow-color), 0 0 8px 2px var(--hf-dot-glow-color);
-  --hf-dot-glow-filter: drop-shadow(0 0 2px var(--hf-dot-glow-color)) drop-shadow(0 0 4px var(--hf-dot-glow-color));
 
-  /* Fold markers: the shape every chevron becomes. Three vertical dots by default; Style
-     Settings > Halftone > Fold marker picks another (rules in section 4). Each icon is drawn
-     from gradients on Lucide's 24-unit grid (Lucide, ISC licence; the dots began as
-     Feather's more-vertical, MIT licence), so the glow follows its shape. --hf-mu is one
-     unit. A marker is an image list with positions and sizes for a centred spot, plus
-     positions for the end of a dropdown (--hf-dd-x is the marker's centre from the right). */
+  /* Fold markers: the shape every chevron becomes. A line by default; Style Settings >
+     Halftone > Fold marker picks another (rules in section 4). Each icon is drawn from
+     gradients on Lucide's 24-unit grid (Lucide, ISC licence; the dots began as Feather's
+     more-vertical, MIT licence), so it takes the colour around it. --hf-mu is one unit. A
+     marker is an image list with positions and sizes for a centred spot, plus positions
+     for the end of a dropdown (--hf-dd-x is the marker's centre from the right). The
+     --hf-marker-open-* set is its shape while what it opens is open, or while a dropdown
+     is hovered: most markers keep their shape and only change colour, but the line widens
+     and the eye opens. */
   --hf-marker-size: 13px;
   --hf-mu: calc(var(--hf-marker-size) / 24);
   --hf-mk-dot: radial-gradient(closest-side, var(--hf-dot-color) calc(100% - 0.3px), transparent);
@@ -220,23 +232,29 @@ body.is-mobile {
   --hf-mk-stroke: linear-gradient(var(--hf-dot-color), var(--hf-dot-color));
   --hf-mk-band: transparent calc(50% - var(--hf-mu)), var(--hf-dot-color) calc(50% - var(--hf-mu) + 0.3px) calc(50% + var(--hf-mu) - 0.3px), transparent calc(50% + var(--hf-mu));
   --hf-dd-x: calc(0.95em + var(--hf-dot-size) / 2 + 1px);
-  /* Three vertical dots */
-  --hf-marker-image: var(--hf-mk-dot), var(--hf-mk-dot), var(--hf-mk-dot);
-  --hf-marker-position: 50% calc(50% - 7 * var(--hf-mu)), 50% 50%, 50% calc(50% + 7 * var(--hf-mu));
-  --hf-marker-sizes: calc(4 * var(--hf-mu)) calc(4 * var(--hf-mu));
-  --hf-marker-dd-position: right calc(var(--hf-dd-x) - 2.0 * var(--hf-mu)) top calc(50% - 7 * var(--hf-mu)), right calc(var(--hf-dd-x) - 2.0 * var(--hf-mu)) top 50%, right calc(var(--hf-dd-x) - 2.0 * var(--hf-mu)) top calc(50% + 7 * var(--hf-mu));
+  /* A line, the default: --hf-line-width at rest, --hf-line-width-open while open */
+  --hf-line-width: 3px;
+  --hf-line-width-open: 5px;
+  --hf-marker-image: var(--hf-mk-stroke);
+  --hf-marker-position: 50% 50%;
+  --hf-marker-sizes: var(--hf-line-width) var(--hf-marker-size);
+  --hf-marker-dd-position: right calc(var(--hf-dd-x) - var(--hf-line-width) / 2) top 50%;
   --hf-marker-dd-sizes: var(--hf-marker-sizes);
+  --hf-marker-open-image: var(--hf-mk-stroke);
+  --hf-marker-open-position: 50% 50%;
+  --hf-marker-open-sizes: var(--hf-line-width-open) var(--hf-marker-size);
+  --hf-marker-open-dd-position: right calc(var(--hf-dd-x) - var(--hf-line-width-open) / 2) top 50%;
+  --hf-marker-open-dd-sizes: var(--hf-marker-open-sizes);
   /* A marker drawn as a box of its own: fold toggles and details */
   --hf-marker-box: var(--hf-marker-size);
   --hf-marker-radius: 0;
   --hf-marker-fill: transparent;
   --hf-marker-box-image: var(--hf-marker-image);
-  --hf-marker-glow: none;
-  /* A thin icon gathers less glow than the solid dot, so while lit it also takes the glow
-     colour and its halo is built up once more */
-  --hf-marker-glow-filter: drop-shadow(0 0 1px var(--hf-dot-glow-color)) var(--hf-dot-glow-filter);
-  --hf-marker-svg-glow: var(--hf-marker-glow-filter);
-  --hf-marker-lit-color: var(--hf-dot-glow-color);
+  --hf-marker-open-box-image: var(--hf-marker-open-image);
+  /* Lit, a marker changes colour and nothing else: to the guide colour, the colour of
+     the line under an open folder. On black bars and inverted rows, where that colour
+     would sink, section 10 lights it in --hf-dot-glow-color instead. */
+  --hf-marker-lit-color: var(--hf-guide-color);
   --hf-marker-valign: -0.2em;
 
   /* Section 11: square scrollbars, the dashboard and timeline cssclasses */
@@ -382,7 +400,7 @@ body.is-mobile {
   --hf-tag-text: var(--hf-chip-text);
   --hf-tag-text-hover: var(--hf-black);
   --hf-selection: rgba(10, 176, 163, 0.45);
-  --hf-guide-color: var(--hf-raspberry);
+  --hf-guide-color: var(--hf-teal-ink);
   --hf-dot-glow-color: var(--hf-pink);
   --hf-error: #7A1530;
   --hf-cover: rgba(39, 42, 41, 0.2);
@@ -537,7 +555,7 @@ body.theme-light.hf-paper-white {
   --hf-cover: rgba(111, 24, 44, 0.18);
 }
 
-/* A pink glow vanishes on pink paper */
+/* A pink marker or glow vanishes on pink paper */
 body.theme-light.hf-paper-pink {
   --hf-guide-color: var(--hf-maroon);
   --hf-dot-glow-color: var(--hf-maroon);
@@ -1331,16 +1349,51 @@ body.hf-gaps:not(.is-popout-window) .workspace .workspace-tab-header-container .
   margin-inline-start: calc(var(--nav-item-children-margin-start, var(--size-4-3)) - var(--hf-guide-width) / 2);
 }
 
-/* An open folder's marker takes the colour of the guide line hanging from it, so the two
-   match; the glow around it stays. Markers elsewhere keep the glow colour, which reads
-   on the inverted rows of menus, and Dot (original) keeps its own text-coloured dot. */
-body:not(.hf-marker-dot) .tree-item-self .collapse-icon {
-  --hf-marker-lit-color: var(--hf-guide-color);
+/* ---------- Fold marker picked in Style Settings ----------
+   The line, the default, is set in section 1 and needs no rule. Every other marker but
+   the eye keeps its shape while open and only changes colour. Dot (original) is
+   Halftone's first marker: one round dot in a box of its own. */
+body:is(.hf-marker-circle, .hf-marker-ellipsis, .hf-marker-dot, .hf-marker-line-dot, .hf-marker-asterisk, .hf-marker-commit, .hf-marker-arrow-dot) {
+  --hf-marker-open-image: var(--hf-marker-image);
+  --hf-marker-open-position: var(--hf-marker-position);
+  --hf-marker-open-sizes: var(--hf-marker-sizes);
+  --hf-marker-open-dd-position: var(--hf-marker-dd-position);
+  --hf-marker-open-dd-sizes: var(--hf-marker-dd-sizes);
+  --hf-marker-open-box-image: var(--hf-marker-box-image);
 }
 
-/* ---------- Fold marker picked in Style Settings ----------
-   Three vertical dots, the default, are set in section 1 and need no rule. Dot (original)
-   is Halftone's first marker: one round dot in a box of its own, lit with a box shadow. */
+/* A small circle of radius 6, so the ring's inside edge is 5/7 of its outside. Its tile is
+   a unit larger all round: tiles snap to whole pixels, and at 13px a ring touching the
+   edge of its tile loses a side. The eye's tiles have the same slack. */
+body.hf-marker-circle {
+  --hf-marker-image: radial-gradient(circle calc(7 * var(--hf-mu)) at center, transparent calc(71.43% - 0.3px), var(--hf-dot-color) 71.43% calc(100% - 0.3px), transparent);
+  --hf-marker-position: 50% 50%;
+  --hf-marker-sizes: calc(16 * var(--hf-mu)) calc(16 * var(--hf-mu));
+  --hf-marker-dd-position: right calc(var(--hf-dd-x) - 8 * var(--hf-mu)) top 50%;
+}
+
+/* The eye is shut at rest and opens with what it opens. Shut: the lid is the lower part of
+   a circle (centre 12 4.355, radius 10.645) cut flat at y 8, and four lashes, the inner
+   pair drawn upright. Open: the lens is an elliptical ring, the pupil a ring of radius 3. */
+body.hf-marker-eye {
+  --hf-marker-image: radial-gradient(circle at 50% calc(-3.645 * var(--hf-mu)), transparent calc(9.645 * var(--hf-mu) - 0.3px), var(--hf-dot-color) calc(9.645 * var(--hf-mu)) calc(11.645 * var(--hf-mu) - 0.3px), transparent calc(11.645 * var(--hf-mu))), linear-gradient(to bottom right, var(--hf-mk-band)), linear-gradient(to top right, var(--hf-mk-band)), var(--hf-mk-stroke), var(--hf-mk-stroke);
+  --hf-marker-position: 50% calc(50% + 0.5 * var(--hf-mu)), calc(50% - 7.14 * var(--hf-mu)) calc(50% + 1.98 * var(--hf-mu)), calc(50% + 7.14 * var(--hf-mu)) calc(50% + 1.98 * var(--hf-mu)), calc(50% - 2.64 * var(--hf-mu)) calc(50% + 4.38 * var(--hf-mu)), calc(50% + 2.64 * var(--hf-mu)) calc(50% + 4.38 * var(--hf-mu));
+  --hf-marker-sizes: calc(24 * var(--hf-mu)) calc(9 * var(--hf-mu)), calc(3.01 * var(--hf-mu)) calc(3.58 * var(--hf-mu)), calc(3.01 * var(--hf-mu)) calc(3.58 * var(--hf-mu)), calc(2 * var(--hf-mu)) calc(4 * var(--hf-mu)), calc(2 * var(--hf-mu)) calc(4 * var(--hf-mu));
+  --hf-marker-dd-position: right calc(var(--hf-dd-x) - 12 * var(--hf-mu)) top calc(50% + 0.5 * var(--hf-mu)), right calc(var(--hf-dd-x) + 5.63 * var(--hf-mu)) top calc(50% + 1.98 * var(--hf-mu)), right calc(var(--hf-dd-x) - 8.64 * var(--hf-mu)) top calc(50% + 1.98 * var(--hf-mu)), right calc(var(--hf-dd-x) + 1.64 * var(--hf-mu)) top calc(50% + 4.38 * var(--hf-mu)), right calc(var(--hf-dd-x) - 3.64 * var(--hf-mu)) top calc(50% + 4.38 * var(--hf-mu));
+  --hf-marker-open-image: radial-gradient(calc(11 * var(--hf-mu)) calc(7.8 * var(--hf-mu)) at center, transparent calc(75% - 0.3px), var(--hf-dot-color) 75% calc(100% - 0.3px), transparent), var(--hf-mk-ring);
+  --hf-marker-open-position: 50% 50%, 50% 50%;
+  --hf-marker-open-sizes: calc(24 * var(--hf-mu)) calc(18 * var(--hf-mu)), calc(8 * var(--hf-mu)) calc(8 * var(--hf-mu));
+  --hf-marker-open-dd-position: right calc(var(--hf-dd-x) - 12 * var(--hf-mu)) top 50%, right calc(var(--hf-dd-x) - 4 * var(--hf-mu)) top 50%;
+  --hf-marker-open-dd-sizes: var(--hf-marker-open-sizes);
+}
+
+body.hf-marker-ellipsis {
+  --hf-marker-image: var(--hf-mk-dot), var(--hf-mk-dot), var(--hf-mk-dot);
+  --hf-marker-position: 50% calc(50% - 7 * var(--hf-mu)), 50% 50%, 50% calc(50% + 7 * var(--hf-mu));
+  --hf-marker-sizes: calc(4 * var(--hf-mu)) calc(4 * var(--hf-mu));
+  --hf-marker-dd-position: right calc(var(--hf-dd-x) - 2.0 * var(--hf-mu)) top calc(50% - 7 * var(--hf-mu)), right calc(var(--hf-dd-x) - 2.0 * var(--hf-mu)) top 50%, right calc(var(--hf-dd-x) - 2.0 * var(--hf-mu)) top calc(50% + 7 * var(--hf-mu));
+}
+
 body.hf-marker-dot {
   --hf-marker-image: radial-gradient(circle, var(--hf-dot-color) calc(var(--hf-dot-size) / 2 - 0.5px), transparent calc(var(--hf-dot-size) / 2));
   --hf-marker-position: center;
@@ -1351,10 +1404,6 @@ body.hf-marker-dot {
   --hf-marker-radius: 50%;
   --hf-marker-fill: var(--hf-dot-color);
   --hf-marker-box-image: none;
-  --hf-marker-glow: var(--hf-dot-glow);
-  --hf-marker-glow-filter: none;
-  --hf-marker-svg-glow: var(--hf-dot-glow-filter);
-  --hf-marker-lit-color: currentColor;
   --hf-marker-valign: 0.12em;
 }
 
@@ -1410,20 +1459,19 @@ body.hf-marker-arrow-dot {
   height: var(--hf-marker-box);
   border-radius: var(--hf-marker-radius);
   background-color: var(--hf-marker-fill);
-  background-image: var(--hf-marker-box-image);
-  background-position: var(--hf-marker-position);
-  background-size: var(--hf-marker-sizes);
+  background-image: var(--hf-marker-open-box-image);
+  background-position: var(--hf-marker-open-position);
+  background-size: var(--hf-marker-open-sizes);
   background-repeat: no-repeat;
   color: var(--hf-marker-lit-color);
-  box-shadow: var(--hf-marker-glow);
-  filter: var(--hf-marker-glow-filter);
-  transition: box-shadow 150ms ease-in-out, filter 150ms ease-in-out;
+  transition: color 150ms ease-in-out;
 }
 
 :is(.collapse-icon.is-collapsed, .is-collapsed .collapse-icon, .callout-fold.is-collapsed)::after {
   color: inherit;
-  box-shadow: none;
-  filter: none;
+  background-image: var(--hf-marker-box-image);
+  background-position: var(--hf-marker-position);
+  background-size: var(--hf-marker-sizes);
 }
 
 /* Live Preview headings: Obsidian's padding was sized for the wider chevron */
@@ -1453,13 +1501,14 @@ details > summary::before {
   background-size: var(--hf-marker-sizes);
   background-repeat: no-repeat;
   vertical-align: var(--hf-marker-valign);
-  transition: box-shadow 150ms ease-in-out, filter 150ms ease-in-out;
+  transition: color 150ms ease-in-out;
 }
 
 details[open] > summary::before {
   color: var(--hf-marker-lit-color);
-  box-shadow: var(--hf-marker-glow);
-  filter: var(--hf-marker-glow-filter);
+  background-image: var(--hf-marker-open-box-image);
+  background-position: var(--hf-marker-open-position);
+  background-size: var(--hf-marker-open-sizes);
 }
 
 /* Menus and pickers: the chevron icon itself is cleared and painted with the marker,
@@ -1476,7 +1525,7 @@ details[open] > summary::before {
   background-position: var(--hf-marker-position);
   background-size: var(--hf-marker-sizes);
   background-repeat: no-repeat;
-  transition: filter 150ms ease-in-out;
+  transition: color 150ms ease-in-out;
 }
 
 :is(.workspace-drawer-vault-switcher-icon, .workspace-tab-header-tab-list, .menu-item-icon.mod-submenu, .setting-item-chevron, .vertical-tab-nav-item-chevron, .bases-toolbar .text-button-icon.mod-aux, .workspace-drawer-header-name-chevron, .workspace-drawer-tab-select .workspace-tab-header-inner-chevron, .combobox-button-chevron, .mobile-tab-switcher-menu-button-chevron, .style-settings-collapse-indicator) svg.svg-icon > *,
@@ -1485,7 +1534,7 @@ details[open] > summary::before {
 }
 
 :is(.workspace-drawer-vault-switcher:hover, .workspace-drawer-vault-switcher.has-active-menu, .workspace-tab-header-tab-list:hover, .workspace-tab-header-tab-list .has-active-menu, .menu-item.selected, .menu-item.has-submenu.is-active, .setting-item.mod-navigable:hover, .vertical-tab-nav-item:hover, .bases-toolbar .text-icon-button:hover, .bases-toolbar .text-icon-button.has-active-menu) :is(.workspace-drawer-vault-switcher-icon, .workspace-tab-header-tab-list, .menu-item-icon.mod-submenu, .setting-item-chevron, .vertical-tab-nav-item-chevron, .text-button-icon.mod-aux) svg.svg-icon,
-.workspace-tab-header-tab-list :is(:hover, .has-active-menu) > svg.svg-icon,
+.workspace-tab-header-tab-list .clickable-icon:is(:hover, .has-active-menu) > svg.svg-icon,
 .nav-action-button > svg.svg-icon.lucide-chevrons-down-up,
 :is(.workspace-drawer-header-switcher:hover, .workspace-drawer-header-switcher:focus-within) .workspace-drawer-header-name-chevron svg.svg-icon,
 .workspace-drawer-tab-options:not(.is-collapsed) .workspace-drawer-tab-select .workspace-tab-header-inner-chevron svg.svg-icon,
@@ -1494,11 +1543,13 @@ details[open] > summary::before {
 .mobile-tab-switcher-menu-button:is(:hover, .mobile-tap, .has-active-menu) .mobile-tab-switcher-menu-button-chevron svg.svg-icon,
 .style-settings-heading:not(.is-collapsed) .style-settings-collapse-indicator svg.svg-icon {
   color: var(--hf-marker-lit-color);
-  filter: var(--hf-marker-svg-glow);
+  background-image: var(--hf-marker-open-image);
+  background-position: var(--hf-marker-open-position);
+  background-size: var(--hf-marker-open-sizes);
 }
 
 /* Style Settings turns its arrow with a rotation while a section is closed; the marker
-   stays upright and shows the state with its glow instead. */
+   stays upright and shows the state with its colour instead. */
 .style-settings-collapse-indicator svg.svg-icon {
   transform: none;
 }
@@ -1517,6 +1568,13 @@ details[open] > summary::before {
   background-size: var(--hf-marker-dd-sizes);
   background-repeat: no-repeat;
   background-blend-mode: normal;
+}
+
+/* A dropdown has no open state to read, so its marker takes the open shape on hover */
+:is(.theme-light, .theme-dark) .dropdown:hover {
+  background-image: var(--hf-marker-open-image);
+  background-position: var(--hf-marker-open-dd-position);
+  background-size: var(--hf-marker-open-dd-sizes);
 }
 
 .tree-item-self.is-active,
@@ -2038,11 +2096,21 @@ body.hf-no-dots .markdown-source-view.mod-cm6 hr {
   color: var(--hf-window-text);
 }
 
+/* Obsidian makes the title bar inline-block, so it sat on a text line at the baseline
+   and dropped 1 or 2px below the frame at some font sizes. As a block it fits its
+   text and stays in the corner. */
 .metadata-properties-heading {
+  display: block;
+  width: fit-content;
   background-color: var(--hf-bar);
   padding: 3px 10px;
   margin-bottom: 0.4em;
   --icon-color: var(--hf-bar-text-dim);
+}
+
+/* Its fold marker hangs outside the bar, on the paper */
+.metadata-properties-heading .collapse-indicator {
+  --hf-marker-lit-color: var(--hf-guide-color);
 }
 
 .metadata-properties-title {
@@ -2711,6 +2779,7 @@ body:not(.is-phone) .vertical-tab-header .vertical-tab-nav-item.is-active,
 .workspace-ribbon:is(.mod-left, .mod-primary) .side-dock-ribbon-action:hover,
 .empty-state-action:hover,
 .empty-state-action.text-icon-button.mod-pill:hover {
+  --hf-marker-lit-color: var(--hf-dot-glow-color);
   --text-normal: var(--hf-invert-text);
   --text-muted: var(--hf-invert-text);
   --text-faint: var(--hf-invert-text);
@@ -2746,6 +2815,7 @@ body:not(.is-phone) .vertical-tab-header .vertical-tab-nav-item.is-active,
 .is-mobile .mobile-toolbar-floating-options,
 .workspace-drawer-tab-options-list,
 .is-mobile .view-header .mod-raised {
+  --hf-marker-lit-color: var(--hf-dot-glow-color);
   --text-normal: var(--hf-bar-text);
   --text-muted: var(--hf-bar-text-dim);
   --text-faint: var(--hf-bar-text-dim);
