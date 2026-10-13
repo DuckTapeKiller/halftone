@@ -2052,7 +2052,12 @@ body.hf-no-dots .markdown-source-view.mod-cm6 hr {
   font-weight: 400;
 }
 
-.callout-title-inner .internal-link.is-unresolved:hover {
+.theme-light .callout-title-inner .internal-link.is-unresolved:hover {
+  color: var(--hf-invert-text);
+}
+
+.theme-dark .callout-title-inner .internal-link.is-unresolved:hover {
+  text-decoration: none;
   color: var(--hf-invert-text);
 }
 
