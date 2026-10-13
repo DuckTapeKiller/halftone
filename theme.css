@@ -2035,6 +2035,10 @@ body.hf-no-dots .markdown-source-view.mod-cm6 hr {
 .callout-title {
   background-color: var(--hf-bar);
   color: var(--hf-bar-text);
+  --link-external-color: var(--hf-bar-text);
+  --link-external-color-hover: var(--hf-bar-text);
+  --link-unresolved-color: var(--hf-bar-text);
+  --link-unresolved-decoration-color: var(--hf-bar-text);
   padding: 4px 10px 4px 4px;
   gap: 8px;
   align-items: center;
@@ -2046,6 +2050,10 @@ body.hf-no-dots .markdown-source-view.mod-cm6 hr {
 .callout-title-inner {
   color: var(--hf-bar-text);
   font-weight: 400;
+}
+
+.callout-title-inner .internal-link.is-unresolved:hover {
+  color: var(--hf-invert-text);
 }
 
 .callout-icon {
