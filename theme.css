@@ -1,4 +1,4 @@
-/* Halftone 1.0.2 | DuckTapeKiller | https://github.com/DuckTapeKiller | MIT
+/* Halftone 1.0.3 | DuckTapeKiller | https://github.com/DuckTapeKiller | MIT
  * Pink halftone paper, black window title bars, pixel labels.
  * Grotesk and mono come from macOS (Helvetica Neue, SF Mono). No network requests.
  */
@@ -9,9 +9,38 @@ name: Halftone
 id: halftone
 settings:
     -
+        id: hf-preset
+        title: Colour preset
+        description: The palette for both modes. Paper and Window colour below belong to Halftone and apply in light mode only. Custom colours, at the end, change any part of any preset
+        type: class-select
+        allowEmpty: false
+        default: hf-preset-halftone
+        options:
+            -
+                label: Halftone (default)
+                value: hf-preset-halftone
+            -
+                label: Bondi (turquoise, tangerine highlights)
+                value: hf-preset-bondi
+            -
+                label: Cobalt (cornflower blue, yellow highlights)
+                value: hf-preset-cobalt
+            -
+                label: Grape (lilac, mint highlights)
+                value: hf-preset-grape
+            -
+                label: Acid (chartreuse, pink highlights)
+                value: hf-preset-acid
+            -
+                label: Tangerine (orange, sky blue highlights)
+                value: hf-preset-tangerine
+            -
+                label: Newsprint (grey paper, yellow highlighter)
+                value: hf-preset-newsprint
+    -
         id: hf-paper
         title: Paper
-        description: The colour of the windows in light mode
+        description: The colour of the windows. Halftone preset, light mode
         type: class-select
         allowEmpty: false
         default: hf-paper-sage
@@ -28,13 +57,13 @@ settings:
     -
         id: hf-window
         title: Window colour
-        description: Fields, properties, callouts, code, tables and menus in light mode
+        description: Fields, properties, callouts, code, tables and menus. Halftone preset, light mode
         type: class-select
         allowEmpty: false
         default: hf-window-blush
         options:
             -
-                label: Blush
+                label: Blush, or sage mist on Sage paper
                 value: hf-window-blush
             -
                 label: Sage mist
@@ -122,6 +151,94 @@ settings:
             -
                 label: Arrow down to dot
                 value: hf-marker-arrow-dot
+    -
+        id: hf-custom-colours
+        title: Custom colours
+        description: Each colour replaces one part of the preset, in the mode it is picked for. Until you pick it, it follows the preset; reset it to hand it back
+        type: heading
+        level: 2
+        collapsed: true
+    -
+        id: hf-custom-desk
+        title: Desk
+        description: Behind and between the windows
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#AABBB8'
+        default-dark: '#1A1C1B'
+    -
+        id: hf-custom-dots
+        title: Dots
+        description: The halftone dots on the desk, horizontal rules, dashboard cards and the backdrop behind dialogs, and the blob on a new tab. Its opacity sets how strong they print
+        type: variable-themed-color
+        format: hex
+        opacity: true
+        default-light: '#272A2999'
+        default-dark: '#A4B0AE4C'
+    -
+        id: hf-custom-paper
+        title: Paper
+        description: The note and the sidebars
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#AABBB8'
+        default-dark: '#272A29'
+    -
+        id: hf-custom-text
+        title: Text
+        description: Body text and headings
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#272A29'
+        default-dark: '#B9C4C2'
+    -
+        id: hf-custom-window
+        title: Windows
+        description: Callouts, properties, code blocks, tables, fields and menus. Their shades are worked out from it
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#DDE4E3'
+        default-dark: '#313534'
+    -
+        id: hf-custom-bar
+        title: Title bars and frames
+        description: Title bars, the status bar, table headers and the frames round every window. Their text turns white or black, whichever reads
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#1E201F'
+        default-dark: '#1E201F'
+    -
+        id: hf-custom-highlight
+        title: Highlight
+        description: Highlighted text and the text selection. Text on it turns white or black, whichever reads
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#0AB0A3'
+        default-dark: '#0AB0A3'
+    -
+        id: hf-custom-accent
+        title: Accent
+        description: Tags on hover (and at rest in dark mode), and the line between panes on hover
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#D45BB6'
+        default-dark: '#D45BB6'
+    -
+        id: hf-custom-guide
+        title: Guide lines
+        description: The line under an open folder and every lit fold marker
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#08857B'
+        default-dark: '#AABBB8'
 
 */
 
@@ -206,6 +323,10 @@ body.is-mobile {
   --hf-crop-length: 16px;
   --hf-crop-weight: 1.5px;
   --hf-blob-opacity: 0.6;
+  /* The new-tab blob: a mask, printed in the dot ink (section 8), so every palette shares it */
+  --hf-blob: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='900' viewBox='0 0 1400 900'%3E %3Cdefs%3E %3CradialGradient id='g'%3E%3Cstop offset='0' stop-opacity='1'/%3E%3Cstop offset='1' stop-opacity='0'/%3E%3C/radialGradient%3E %3Cfilter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E %3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='1' seed='7' result='n'/%3E %3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.6 0 0 0 -0.3' result='na'/%3E %3CfeComposite in='SourceGraphic' in2='na' operator='arithmetic' k1='0' k2='1' k3='1' k4='-0.62' result='s'/%3E %3CfeComponentTransfer in='s' result='t'%3E%3CfeFuncA type='discrete' tableValues='0 1'/%3E%3C/feComponentTransfer%3E %3CfeFlood flood-color='%23000'/%3E%3CfeComposite in2='t' operator='in'/%3E %3C/filter%3E %3C/defs%3E %3Cg filter='url%28%23f%29'%3E%3Crect width='1400' height='900' fill='none'/%3E %3Ccircle cx='230' cy='900' r='520' fill='url%28%23g%29'/%3E %3Ccircle cx='1330' cy='420' r='430' fill='url%28%23g%29'/%3E %3Ccircle cx='820' cy='1010' r='430' fill='url%28%23g%29'/%3E %3C/g%3E%3C/svg%3E");
+  /* Tags on hover in light mode, tags in dark mode, the line between panes on hover */
+  --hf-p-accent: var(--hf-magenta);
 
   /* Sidebar trees: guide lines under open folders. Markers: every chevron in the app is
      drawn as a marker instead, lit while what it opens is open. The guide and lit colours
@@ -357,35 +478,34 @@ body.is-mobile {
 
 /* ---------- Light: sage paper (default) ---------- */
 .theme-light {
-  --hf-desk: var(--hf-sage);
-  --hf-dots: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW/AAAAEElEQVR4nGNQ19KcyUAQAAAmsgEUrodsSQAAAABJRU5ErkJggg==");
-  --hf-blob: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='900' viewBox='0 0 1400 900'%3E %3Cdefs%3E %3CradialGradient id='g'%3E%3Cstop offset='0' stop-opacity='1'/%3E%3Cstop offset='1' stop-opacity='0'/%3E%3C/radialGradient%3E %3Cfilter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E %3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='1' seed='7' result='n'/%3E %3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.6 0 0 0 -0.3' result='na'/%3E %3CfeComposite in='SourceGraphic' in2='na' operator='arithmetic' k1='0' k2='1' k3='1' k4='-0.62' result='s'/%3E %3CfeComponentTransfer in='s' result='t'%3E%3CfeFuncA type='discrete' tableValues='0 1'/%3E%3C/feComponentTransfer%3E %3CfeFlood flood-color='%23272A29'/%3E%3CfeComposite in2='t' operator='in'/%3E %3C/filter%3E %3C/defs%3E %3Cg filter='url%28%23f%29'%3E%3Crect width='1400' height='900' fill='none'/%3E %3Ccircle cx='230' cy='900' r='520' fill='url%28%23g%29'/%3E %3Ccircle cx='1330' cy='420' r='430' fill='url%28%23g%29'/%3E %3Ccircle cx='820' cy='1010' r='430' fill='url%28%23g%29'/%3E %3C/g%3E%3C/svg%3E");
-  --hf-paper-bg: var(--hf-sage);
-  --hf-paper-alt: #9DB0AD;
-  --hf-heading: var(--hf-graphite);
-  --hf-text: var(--hf-graphite);
+  --hf-p-desk: var(--hf-sage);
+  --hf-p-dot-ink: rgb(39 42 41 / 0.6);
+  --hf-p-paper-bg: var(--hf-sage);
+  --hf-p-paper-alt: #9DB0AD;
+  --hf-p-heading: var(--hf-graphite);
+  --hf-p-text: var(--hf-graphite);
   --hf-text-strong: #111312;
   --hf-text-muted: #353D3B;
   --hf-text-faint: #404A48;
   --hf-bar-error: #FF7F9C;
   --hf-rule: rgba(30, 30, 30, 0.26);
   --hf-rule-strong: rgba(30, 30, 30, 0.5);
-  --hf-line: var(--hf-frame-black);
+  --hf-p-line: var(--hf-frame-black);
   --hf-stroke: var(--hf-frame-black);
   --hf-stroke-soft: var(--hf-frame-black);
   --hf-code-chip-bg: var(--hf-frame-black);
   --hf-code-chip-text: var(--hf-sage);
-  --hf-bar: var(--hf-frame-black);
-  --hf-bar-text: #F4F4F4;
-  --hf-bar-text-dim: #A6A6A6;
-  --hf-bar-hover: rgba(255, 255, 255, 0.14);
-  --hf-bar-solid-hover: #3A3A3A;
-  --hf-window: var(--hf-mist);
-  --hf-window-alt: #C9D3D1;
+  --hf-p-bar: var(--hf-frame-black);
+  --hf-p-bar-text: #F4F4F4;
+  --hf-p-bar-text-dim: #A6A6A6;
+  --hf-p-bar-hover: rgba(255, 255, 255, 0.14);
+  --hf-p-bar-solid-hover: #3A3A3A;
+  --hf-p-window: var(--hf-mist);
+  --hf-p-window-alt: #C9D3D1;
   --hf-window-text: var(--hf-black);
   --hf-window-muted: #4B5553;
-  --hf-chip-bg: #C9D3D1;
-  --hf-chip-hover: #B9C5C3;
+  --hf-p-chip-bg: #C9D3D1;
+  --hf-p-chip-hover: #B9C5C3;
   --hf-window-hover: rgba(30, 30, 30, 0.06);
   --hf-chip-text: var(--hf-graphite);
   --hf-invert-bg: var(--hf-frame-black);
@@ -393,14 +513,14 @@ body.is-mobile {
   --hf-invert-text: var(--hf-sage);
   --hf-hover: rgba(30, 30, 30, 0.09);
   --hf-active: rgba(30, 30, 30, 0.16);
-  --hf-highlight: var(--hf-teal);
-  --hf-highlight-text: var(--hf-black);
-  --hf-tag-bg: var(--hf-chip-bg);
-  --hf-tag-bg-hover: var(--hf-magenta);
-  --hf-tag-text: var(--hf-chip-text);
-  --hf-tag-text-hover: var(--hf-black);
-  --hf-selection: rgba(10, 176, 163, 0.45);
-  --hf-guide-color: var(--hf-teal-ink);
+  --hf-p-highlight: var(--hf-teal);
+  --hf-p-highlight-text: var(--hf-black);
+  --hf-p-tag-bg: var(--hf-chip-bg);
+  --hf-p-tag-bg-hover: var(--hf-magenta);
+  --hf-p-tag-text: var(--hf-chip-text);
+  --hf-p-tag-text-hover: var(--hf-black);
+  --hf-p-selection: rgba(10, 176, 163, 0.45);
+  --hf-p-guide-color: var(--hf-teal-ink);
   --hf-dot-glow-color: var(--hf-pink);
   --hf-error: #7A1530;
   --hf-cover: rgba(39, 42, 41, 0.2);
@@ -441,50 +561,49 @@ body.is-mobile {
 
 /* ---------- Dark: graphite, sage, teal and magenta, from the second reference ---------- */
 .theme-dark {
-  --hf-desk: #1A1C1B;
-  --hf-dots: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW/AAAAEElEQVR4nGNYsmGdDwNBAABUywJPyTFqOAAAAABJRU5ErkJggg==");
-  --hf-blob: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='900' viewBox='0 0 1400 900'%3E %3Cdefs%3E %3CradialGradient id='g'%3E%3Cstop offset='0' stop-opacity='1'/%3E%3Cstop offset='1' stop-opacity='0'/%3E%3C/radialGradient%3E %3Cfilter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E %3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='1' seed='7' result='n'/%3E %3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.6 0 0 0 -0.3' result='na'/%3E %3CfeComposite in='SourceGraphic' in2='na' operator='arithmetic' k1='0' k2='1' k3='1' k4='-0.62' result='s'/%3E %3CfeComponentTransfer in='s' result='t'%3E%3CfeFuncA type='discrete' tableValues='0 1'/%3E%3C/feComponentTransfer%3E %3CfeFlood flood-color='%23A4B0AE'/%3E%3CfeComposite in2='t' operator='in'/%3E %3C/filter%3E %3C/defs%3E %3Cg filter='url%28%23f%29'%3E%3Crect width='1400' height='900' fill='none'/%3E %3Ccircle cx='230' cy='900' r='520' fill='url%28%23g%29'/%3E %3Ccircle cx='1330' cy='420' r='430' fill='url%28%23g%29'/%3E %3Ccircle cx='820' cy='1010' r='430' fill='url%28%23g%29'/%3E %3C/g%3E%3C/svg%3E");
-  --hf-paper-bg: var(--hf-graphite);
-  --hf-paper-alt: #2E3231;
-  --hf-heading: #D3DCDA;
-  --hf-text: #B9C4C2;
+  --hf-p-desk: #1A1C1B;
+  --hf-p-dot-ink: rgb(164 176 174 / 0.298);
+  --hf-p-paper-bg: var(--hf-graphite);
+  --hf-p-paper-alt: #2E3231;
+  --hf-p-heading: #D3DCDA;
+  --hf-p-text: #B9C4C2;
   --hf-text-strong: #E3EAE8;
   --hf-text-muted: #9DA9A7;
   --hf-text-faint: #8C9896;
   --hf-bar-error: #F28BA6;
   --hf-rule: rgba(170, 187, 184, 0.16);
   --hf-rule-strong: rgba(170, 187, 184, 0.36);
-  --hf-line: var(--hf-frame-black);
+  --hf-p-line: var(--hf-frame-black);
   --hf-stroke: var(--hf-lineart);
   --hf-stroke-soft: rgba(164, 176, 174, 0.5);
   --hf-code-chip-bg: var(--hf-frame-black);
   --hf-code-chip-text: #3BC2B5;
-  --hf-bar: var(--hf-frame-black);
-  --hf-bar-text: var(--hf-sage);
-  --hf-bar-text-dim: #8E9A98;
-  --hf-bar-hover: rgba(170, 187, 184, 0.12);
-  --hf-bar-solid-hover: #323634;
-  --hf-window: #313534;
-  --hf-window-alt: #3B403F;
+  --hf-p-bar: var(--hf-frame-black);
+  --hf-p-bar-text: var(--hf-sage);
+  --hf-p-bar-text-dim: #8E9A98;
+  --hf-p-bar-hover: rgba(170, 187, 184, 0.12);
+  --hf-p-bar-solid-hover: #323634;
+  --hf-p-window: #313534;
+  --hf-p-window-alt: #3B403F;
   --hf-window-text: #C9D3D1;
   --hf-window-muted: #A6B2B0;
   --hf-window-hover: rgba(170, 187, 184, 0.07);
-  --hf-chip-bg: #3B403F;
-  --hf-chip-hover: #474D4B;
+  --hf-p-chip-bg: #3B403F;
+  --hf-p-chip-hover: #474D4B;
   --hf-chip-text: #C9D3D1;
   --hf-invert-bg: var(--hf-teal);
   --hf-invert-hover: #20BFB2;
   --hf-invert-text: var(--hf-frame-black);
   --hf-hover: rgba(170, 187, 184, 0.08);
   --hf-active: rgba(170, 187, 184, 0.14);
-  --hf-highlight: var(--hf-teal);
-  --hf-highlight-text: var(--hf-frame-black);
-  --hf-tag-bg: var(--hf-magenta);
-  --hf-tag-bg-hover: #DE76C4;
-  --hf-tag-text: var(--hf-plum);
-  --hf-tag-text-hover: var(--hf-plum);
-  --hf-selection: rgba(10, 176, 163, 0.35);
-  --hf-guide-color: var(--hf-sage);
+  --hf-p-highlight: var(--hf-teal);
+  --hf-p-highlight-text: var(--hf-frame-black);
+  --hf-p-tag-bg: var(--hf-magenta);
+  --hf-p-tag-bg-hover: #DE76C4;
+  --hf-p-tag-text: var(--hf-plum);
+  --hf-p-tag-text-hover: var(--hf-plum);
+  --hf-p-selection: rgba(10, 176, 163, 0.35);
+  --hf-p-guide-color: var(--hf-sage);
   --hf-dot-glow-color: var(--hf-guide-color);
   --hf-error: #E38AA6;
   --hf-cover: rgba(18, 20, 19, 0.55);
@@ -527,27 +646,26 @@ body.is-mobile {
 /* Pink paper; the white option keeps the pink desk and ink around its windows */
 body.theme-light.hf-paper-pink,
 body.theme-light.hf-paper-white {
-  --hf-desk: var(--hf-pink);
-  --hf-dots: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW/AAAAEElEQVR4nGPIl9DZz0AQAAA0ZgFzIClxtQAAAABJRU5ErkJggg==");
-  --hf-blob: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='900' viewBox='0 0 1400 900'%3E %3Cdefs%3E %3CradialGradient id='g'%3E%3Cstop offset='0' stop-opacity='1'/%3E%3Cstop offset='1' stop-opacity='0'/%3E%3C/radialGradient%3E %3Cfilter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E %3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='1' seed='7' result='n'/%3E %3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.6 0 0 0 -0.3' result='na'/%3E %3CfeComposite in='SourceGraphic' in2='na' operator='arithmetic' k1='0' k2='1' k3='1' k4='-0.62' result='s'/%3E %3CfeComponentTransfer in='s' result='t'%3E%3CfeFuncA type='discrete' tableValues='0 1'/%3E%3C/feComponentTransfer%3E %3CfeFlood flood-color='%236F182C'/%3E%3CfeComposite in2='t' operator='in'/%3E %3C/filter%3E %3C/defs%3E %3Cg filter='url%28%23f%29'%3E%3Crect width='1400' height='900' fill='none'/%3E %3Ccircle cx='230' cy='900' r='520' fill='url%28%23g%29'/%3E %3Ccircle cx='1330' cy='420' r='430' fill='url%28%23g%29'/%3E %3Ccircle cx='820' cy='1010' r='430' fill='url%28%23g%29'/%3E %3C/g%3E%3C/svg%3E");
-  --hf-paper-bg: var(--hf-pink);
-  --hf-paper-alt: #EC7896;
-  --hf-heading: var(--hf-ink);
-  --hf-text: var(--hf-ink);
+  --hf-p-desk: var(--hf-pink);
+  --hf-p-dot-ink: rgb(111 24 44 / 0.749);
+  --hf-p-paper-bg: var(--hf-pink);
+  --hf-p-paper-alt: #EC7896;
+  --hf-p-heading: var(--hf-ink);
+  --hf-p-text: var(--hf-ink);
   --hf-text-strong: var(--hf-black);
   --hf-text-muted: #62142A;
   --hf-text-faint: #6F182C;
-  --hf-line: var(--hf-black);
+  --hf-p-line: var(--hf-black);
   --hf-stroke: var(--hf-line);
   --hf-stroke-soft: var(--hf-line);
   --hf-code-chip-bg: var(--hf-black);
   --hf-code-chip-text: var(--hf-pink);
-  --hf-bar: var(--hf-black);
-  --hf-window: var(--hf-blush);
-  --hf-window-alt: #F4BFCD;
+  --hf-p-bar: var(--hf-black);
+  --hf-p-window: var(--hf-blush);
+  --hf-p-window-alt: #F4BFCD;
   --hf-window-muted: var(--hf-caption);
-  --hf-chip-bg: #F5BCCB;
-  --hf-chip-hover: #EFA8BA;
+  --hf-p-chip-bg: #F5BCCB;
+  --hf-p-chip-hover: #EFA8BA;
   --hf-chip-text: var(--hf-ink);
   --hf-invert-bg: var(--hf-black);
   --hf-invert-text: var(--hf-pink);
@@ -557,15 +675,15 @@ body.theme-light.hf-paper-white {
 
 /* A pink marker or glow vanishes on pink paper */
 body.theme-light.hf-paper-pink {
-  --hf-guide-color: var(--hf-maroon);
+  --hf-p-guide-color: var(--hf-maroon);
   --hf-dot-glow-color: var(--hf-maroon);
 }
 
 body.theme-light.hf-paper-white {
-  --hf-paper-bg: var(--hf-white);
-  --hf-paper-alt: #F3F3F3;
-  --hf-heading: var(--hf-ink);
-  --hf-text: #2A2A2A;
+  --hf-p-paper-bg: var(--hf-white);
+  --hf-p-paper-alt: #F3F3F3;
+  --hf-p-heading: var(--hf-ink);
+  --hf-p-text: #2A2A2A;
   --hf-text-strong: var(--hf-black);
   --hf-text-muted: #5E5E5E;
   --hf-text-faint: #707070;
@@ -576,27 +694,713 @@ body.theme-light.hf-paper-white {
 
 /* Window colour (light mode) */
 body.theme-light.hf-window-mist {
-  --hf-window: var(--hf-mist);
-  --hf-window-alt: #C9D3D1;
+  --hf-p-window: var(--hf-mist);
+  --hf-p-window-alt: #C9D3D1;
   --hf-window-muted: #4B5553;
-  --hf-chip-bg: #C9D3D1;
-  --hf-chip-hover: #B9C5C3;
+  --hf-p-chip-bg: #C9D3D1;
+  --hf-p-chip-hover: #B9C5C3;
 }
 
 body.theme-light.hf-window-grey {
-  --hf-window: var(--hf-panel);
-  --hf-window-alt: #CBCBCB;
+  --hf-p-window: var(--hf-panel);
+  --hf-p-window-alt: #CBCBCB;
   --hf-window-muted: #555555;
-  --hf-chip-bg: #C7C7C7;
-  --hf-chip-hover: #B8B8B8;
+  --hf-p-chip-bg: #C7C7C7;
+  --hf-p-chip-hover: #B8B8B8;
 }
 
 body.theme-light.hf-window-white {
-  --hf-window: var(--hf-white);
-  --hf-window-alt: var(--hf-track);
+  --hf-p-window: var(--hf-white);
+  --hf-p-window-alt: var(--hf-track);
   --hf-window-muted: #686868;
-  --hf-chip-bg: var(--hf-panel);
-  --hf-chip-hover: var(--hf-chip);
+  --hf-p-chip-bg: var(--hf-panel);
+  --hf-p-chip-hover: var(--hf-chip);
+}
+
+/* ---------- Colour presets ----------
+   Style Settings > Halftone > Colour preset. Halftone, the default, is the palette above,
+   with its Paper and Window colour options. Every other preset repaints both modes and
+   sets the paper and windows itself, so those two options stand down while one is on.
+   Each keeps the scheme: a desk printed with dots of its ink, paper the same colour,
+   paler windows, ink-black title bars and frames, a pop colour for highlights and
+   another for tags. Every text colour reads at 4.5:1 or more on what it sits on, the
+   code colours included; body text reads at 7:1 or more. */
+body.theme-light.hf-preset-bondi {
+  --hf-p-desk: #8ECDD3;
+  --hf-p-dot-ink: rgb(15 36 39 / 0.6);
+  --hf-p-paper-bg: #8ECDD3;
+  --hf-p-paper-alt: #84BFC5;
+  --hf-p-heading: #163135;
+  --hf-p-text: #163135;
+  --hf-text-strong: #08181A;
+  --hf-text-muted: #1F4247;
+  --hf-text-faint: #265058;
+  --hf-rule: rgba(15, 36, 39, 0.26);
+  --hf-rule-strong: rgba(15, 36, 39, 0.5);
+  --hf-p-line: #0F2427;
+  --hf-stroke: #0F2427;
+  --hf-stroke-soft: #0F2427;
+  --hf-code-chip-bg: #0F2427;
+  --hf-code-chip-text: #8ECDD3;
+  --hf-p-bar: #0F2427;
+  --hf-p-bar-text: #F4F4F4;
+  --hf-p-bar-text-dim: #A2A9AA;
+  --hf-p-bar-hover: rgba(255, 255, 255, 0.14);
+  --hf-p-bar-solid-hover: #2C3E41;
+  --hf-p-window: #DDF1F3;
+  --hf-p-window-alt: #CADFE1;
+  --hf-window-text: #0F2427;
+  --hf-window-muted: #1F4247;
+  --hf-p-chip-bg: #CADFE1;
+  --hf-p-chip-hover: #BED2D4;
+  --hf-window-hover: rgba(15, 36, 39, 0.06);
+  --hf-chip-text: #163135;
+  --hf-invert-bg: #0F2427;
+  --hf-invert-hover: #2C3E41;
+  --hf-invert-text: #8ECDD3;
+  --hf-hover: rgba(15, 36, 39, 0.09);
+  --hf-active: rgba(15, 36, 39, 0.16);
+  --hf-p-highlight: #FFB648;
+  --hf-p-highlight-text: #0F2427;
+  --hf-p-tag-bg: var(--hf-chip-bg);
+  --hf-p-tag-bg-hover: #FF7B5C;
+  --hf-p-tag-text: var(--hf-chip-text);
+  --hf-p-tag-text-hover: #1A0B06;
+  --hf-p-selection: rgba(255, 182, 72, 0.45);
+  --hf-p-guide-color: #0A5A63;
+  --hf-dot-glow-color: #FFB648;
+  --hf-error: #80172A;
+  --hf-cover: rgba(15, 36, 39, 0.2);
+  --hf-p-accent: #FF7B5C;
+  --text-highlight-bg-rgb: 255, 182, 72;
+}
+
+body.theme-dark.hf-preset-bondi {
+  --hf-p-desk: #0B1A1C;
+  --hf-p-dot-ink: rgb(159 211 217 / 0.26);
+  --hf-p-paper-bg: #11262A;
+  --hf-p-paper-alt: #162E33;
+  --hf-p-heading: #CDE8EB;
+  --hf-p-text: #B4D6DA;
+  --hf-text-strong: #E4F4F5;
+  --hf-text-muted: #93B9BE;
+  --hf-text-faint: #84ABB0;
+  --hf-rule: rgba(159, 211, 217, 0.16);
+  --hf-rule-strong: rgba(159, 211, 217, 0.36);
+  --hf-p-line: #081416;
+  --hf-stroke: #7CA8AD;
+  --hf-stroke-soft: rgba(124, 168, 173, 0.5);
+  --hf-code-chip-bg: #081416;
+  --hf-code-chip-text: #45C7D5;
+  --hf-p-bar: #081416;
+  --hf-p-bar-text: #9FD3D9;
+  --hf-p-bar-text-dim: #698E93;
+  --hf-p-bar-hover: rgba(159, 211, 217, 0.12);
+  --hf-p-bar-solid-hover: #1A2B2D;
+  --hf-p-window: #1A363B;
+  --hf-p-window-alt: #22434A;
+  --hf-window-text: #C7E2E5;
+  --hf-window-muted: #93B9BE;
+  --hf-window-hover: rgba(159, 211, 217, 0.07);
+  --hf-p-chip-bg: #22434A;
+  --hf-p-chip-hover: #2A4E56;
+  --hf-chip-text: #C7E2E5;
+  --hf-invert-bg: #27B8C8;
+  --hf-invert-hover: #45C7D5;
+  --hf-invert-text: #081416;
+  --hf-hover: rgba(159, 211, 217, 0.08);
+  --hf-active: rgba(159, 211, 217, 0.14);
+  --hf-p-highlight: #F5A640;
+  --hf-p-highlight-text: #081416;
+  --hf-p-tag-bg: #F07E62;
+  --hf-p-tag-bg-hover: #F49A84;
+  --hf-p-tag-text: #2A0D05;
+  --hf-p-tag-text-hover: #2A0D05;
+  --hf-p-selection: rgba(39, 184, 200, 0.35);
+  --hf-p-guide-color: #8ECDD3;
+  --hf-error: #F08A9A;
+  --hf-cover: rgba(11, 26, 28, 0.55);
+  --hf-p-accent: #F07E62;
+  --text-highlight-bg-rgb: 245, 166, 64;
+  --accent-h: 186;
+  --accent-s: 67%;
+  --accent-l: 47%;
+}
+
+body.theme-light.hf-preset-cobalt {
+  --hf-p-desk: #A9BDEB;
+  --hf-p-dot-ink: rgb(17 26 54 / 0.6);
+  --hf-p-paper-bg: #A9BDEB;
+  --hf-p-paper-alt: #9DB0DD;
+  --hf-p-heading: #18213F;
+  --hf-p-text: #18213F;
+  --hf-text-strong: #0A0F22;
+  --hf-text-muted: #263463;
+  --hf-text-faint: #2E3E73;
+  --hf-rule: rgba(17, 26, 54, 0.26);
+  --hf-rule-strong: rgba(17, 26, 54, 0.5);
+  --hf-p-line: #111A36;
+  --hf-stroke: #111A36;
+  --hf-stroke-soft: #111A36;
+  --hf-code-chip-bg: #111A36;
+  --hf-code-chip-text: #A9BDEB;
+  --hf-p-bar: #111A36;
+  --hf-p-bar-text: #F4F4F4;
+  --hf-p-bar-text-dim: #A2A6B0;
+  --hf-p-bar-hover: rgba(255, 255, 255, 0.14);
+  --hf-p-bar-solid-hover: #2E354E;
+  --hf-p-window: #E4EBFA;
+  --hf-p-window-alt: #D1D8E8;
+  --hf-window-text: #111A36;
+  --hf-window-muted: #263463;
+  --hf-p-chip-bg: #D1D8E8;
+  --hf-p-chip-hover: #C4CCDD;
+  --hf-window-hover: rgba(17, 26, 54, 0.06);
+  --hf-chip-text: #18213F;
+  --hf-invert-bg: #111A36;
+  --hf-invert-hover: #2E354E;
+  --hf-invert-text: #A9BDEB;
+  --hf-hover: rgba(17, 26, 54, 0.09);
+  --hf-active: rgba(17, 26, 54, 0.16);
+  --hf-p-highlight: #FFD84A;
+  --hf-p-highlight-text: #111A36;
+  --hf-p-tag-bg: var(--hf-chip-bg);
+  --hf-p-tag-bg-hover: #FF6B5B;
+  --hf-p-tag-text: var(--hf-chip-text);
+  --hf-p-tag-text-hover: #1F0503;
+  --hf-p-selection: rgba(255, 216, 74, 0.45);
+  --hf-p-guide-color: #1E3FA8;
+  --hf-dot-glow-color: #FFD84A;
+  --hf-error: #7E1230;
+  --hf-cover: rgba(17, 26, 54, 0.2);
+  --hf-p-accent: #FF6B5B;
+  --text-highlight-bg-rgb: 255, 216, 74;
+}
+
+body.theme-dark.hf-preset-cobalt {
+  --hf-p-desk: #0B1022;
+  --hf-p-dot-ink: rgb(169 189 235 / 0.26);
+  --hf-p-paper-bg: #111833;
+  --hf-p-paper-alt: #161F3E;
+  --hf-p-heading: #D0DAF4;
+  --hf-p-text: #B9C6EA;
+  --hf-text-strong: #E6ECFA;
+  --hf-text-muted: #9AA9D4;
+  --hf-text-faint: #8B9AC6;
+  --hf-rule: rgba(169, 189, 235, 0.16);
+  --hf-rule-strong: rgba(169, 189, 235, 0.36);
+  --hf-p-line: #080C1A;
+  --hf-stroke: #8394BD;
+  --hf-stroke-soft: rgba(131, 148, 189, 0.5);
+  --hf-code-chip-bg: #080C1A;
+  --hf-code-chip-text: #93ABF5;
+  --hf-p-bar: #080C1A;
+  --hf-p-bar-text: #A9BDEB;
+  --hf-p-bar-text-dim: #6F7DA0;
+  --hf-p-bar-hover: rgba(169, 189, 235, 0.12);
+  --hf-p-bar-solid-hover: #1B2133;
+  --hf-p-window: #1A2447;
+  --hf-p-window-alt: #232F57;
+  --hf-window-text: #CBD5F0;
+  --hf-window-muted: #9AA9D4;
+  --hf-window-hover: rgba(169, 189, 235, 0.07);
+  --hf-p-chip-bg: #232F57;
+  --hf-p-chip-hover: #2B3864;
+  --hf-chip-text: #CBD5F0;
+  --hf-invert-bg: #7896F2;
+  --hf-invert-hover: #93ABF5;
+  --hf-invert-text: #080C1A;
+  --hf-hover: rgba(169, 189, 235, 0.08);
+  --hf-active: rgba(169, 189, 235, 0.14);
+  --hf-p-highlight: #F2CE45;
+  --hf-p-highlight-text: #080C1A;
+  --hf-p-tag-bg: #FF7A6B;
+  --hf-p-tag-bg-hover: #FF978B;
+  --hf-p-tag-text: #2B0603;
+  --hf-p-tag-text-hover: #2B0603;
+  --hf-p-selection: rgba(120, 150, 242, 0.35);
+  --hf-p-guide-color: #A9BDEB;
+  --hf-error: #F28FA0;
+  --hf-cover: rgba(11, 16, 34, 0.55);
+  --hf-p-accent: #FF7A6B;
+  --text-highlight-bg-rgb: 242, 206, 69;
+  --accent-h: 225;
+  --accent-s: 82%;
+  --accent-l: 71%;
+}
+
+body.theme-light.hf-preset-grape {
+  --hf-p-desk: #C9B6E8;
+  --hf-p-dot-ink: rgb(31 21 48 / 0.6);
+  --hf-p-paper-bg: #C9B6E8;
+  --hf-p-paper-alt: #BBA9D9;
+  --hf-p-heading: #2A1F3D;
+  --hf-p-text: #2A1F3D;
+  --hf-text-strong: #150D22;
+  --hf-text-muted: #432F60;
+  --hf-text-faint: #4F3A70;
+  --hf-rule: rgba(31, 21, 48, 0.26);
+  --hf-rule-strong: rgba(31, 21, 48, 0.5);
+  --hf-p-line: #1F1530;
+  --hf-stroke: #1F1530;
+  --hf-stroke-soft: #1F1530;
+  --hf-code-chip-bg: #1F1530;
+  --hf-code-chip-text: #C9B6E8;
+  --hf-p-bar: #1F1530;
+  --hf-p-bar-text: #F4F4F4;
+  --hf-p-bar-text-dim: #A7A4AD;
+  --hf-p-bar-hover: rgba(255, 255, 255, 0.14);
+  --hf-p-bar-solid-hover: #3A3149;
+  --hf-p-window: #F0E9FA;
+  --hf-p-window-alt: #DDD6E8;
+  --hf-window-text: #1F1530;
+  --hf-window-muted: #432F60;
+  --hf-p-chip-bg: #DDD6E8;
+  --hf-p-chip-hover: #D1C9DC;
+  --hf-window-hover: rgba(31, 21, 48, 0.06);
+  --hf-chip-text: #2A1F3D;
+  --hf-invert-bg: #1F1530;
+  --hf-invert-hover: #3A3149;
+  --hf-invert-text: #C9B6E8;
+  --hf-hover: rgba(31, 21, 48, 0.09);
+  --hf-active: rgba(31, 21, 48, 0.16);
+  --hf-p-highlight: #7EE0B0;
+  --hf-p-highlight-text: #1F1530;
+  --hf-p-tag-bg: var(--hf-chip-bg);
+  --hf-p-tag-bg-hover: #FF7FC8;
+  --hf-p-tag-text: var(--hf-chip-text);
+  --hf-p-tag-text-hover: #2E0620;
+  --hf-p-selection: rgba(126, 224, 176, 0.45);
+  --hf-p-guide-color: #5A2B9A;
+  --hf-dot-glow-color: #7EE0B0;
+  --hf-error: #7A1240;
+  --hf-cover: rgba(31, 21, 48, 0.2);
+  --hf-p-accent: #FF7FC8;
+  --text-highlight-bg-rgb: 126, 224, 176;
+}
+
+body.theme-dark.hf-preset-grape {
+  --hf-p-desk: #120D1B;
+  --hf-p-dot-ink: rgb(201 182 232 / 0.26);
+  --hf-p-paper-bg: #1B1428;
+  --hf-p-paper-alt: #221930;
+  --hf-p-heading: #DED4EF;
+  --hf-p-text: #CBBFE2;
+  --hf-text-strong: #EEE8F8;
+  --hf-text-muted: #AE9FCA;
+  --hf-text-faint: #9F90BC;
+  --hf-rule: rgba(201, 182, 232, 0.16);
+  --hf-rule-strong: rgba(201, 182, 232, 0.36);
+  --hf-p-line: #0D0914;
+  --hf-stroke: #9E8EB8;
+  --hf-stroke-soft: rgba(158, 142, 184, 0.5);
+  --hf-code-chip-bg: #0D0914;
+  --hf-code-chip-text: #C0A3F5;
+  --hf-p-bar: #0D0914;
+  --hf-p-bar-text: #C9B6E8;
+  --hf-p-bar-text-dim: #85789C;
+  --hf-p-bar-hover: rgba(201, 182, 232, 0.12);
+  --hf-p-bar-solid-hover: #241E2D;
+  --hf-p-window: #281E38;
+  --hf-p-window-alt: #332745;
+  --hf-window-text: #D9CFEB;
+  --hf-window-muted: #AE9FCA;
+  --hf-window-hover: rgba(201, 182, 232, 0.07);
+  --hf-p-chip-bg: #332745;
+  --hf-p-chip-hover: #3D3052;
+  --hf-chip-text: #D9CFEB;
+  --hf-invert-bg: #B08CF2;
+  --hf-invert-hover: #C0A3F5;
+  --hf-invert-text: #0D0914;
+  --hf-hover: rgba(201, 182, 232, 0.08);
+  --hf-active: rgba(201, 182, 232, 0.14);
+  --hf-p-highlight: #6FDDA9;
+  --hf-p-highlight-text: #0D0914;
+  --hf-p-tag-bg: #F07CC2;
+  --hf-p-tag-bg-hover: #F49AD1;
+  --hf-p-tag-text: #2E0620;
+  --hf-p-tag-text-hover: #2E0620;
+  --hf-p-selection: rgba(176, 140, 242, 0.35);
+  --hf-p-guide-color: #C9B6E8;
+  --hf-error: #F08FB3;
+  --hf-cover: rgba(18, 13, 27, 0.55);
+  --hf-p-accent: #F07CC2;
+  --text-highlight-bg-rgb: 111, 221, 169;
+  --accent-h: 261;
+  --accent-s: 80%;
+  --accent-l: 75%;
+}
+
+body.theme-light.hf-preset-acid {
+  --hf-p-desk: #CFE27A;
+  --hf-p-dot-ink: rgb(23 29 10 / 0.6);
+  --hf-p-paper-bg: #CFE27A;
+  --hf-p-paper-alt: #C0D271;
+  --hf-p-heading: #222B10;
+  --hf-p-text: #222B10;
+  --hf-text-strong: #0F1405;
+  --hf-text-muted: #36451A;
+  --hf-text-faint: #405121;
+  --hf-rule: rgba(23, 29, 10, 0.26);
+  --hf-rule-strong: rgba(23, 29, 10, 0.5);
+  --hf-p-line: #171D0A;
+  --hf-stroke: #171D0A;
+  --hf-stroke-soft: #171D0A;
+  --hf-code-chip-bg: #171D0A;
+  --hf-code-chip-text: #CFE27A;
+  --hf-p-bar: #171D0A;
+  --hf-p-bar-text: #F4F4F4;
+  --hf-p-bar-text-dim: #A4A7A0;
+  --hf-p-bar-hover: rgba(255, 255, 255, 0.14);
+  --hf-p-bar-solid-hover: #333827;
+  --hf-p-window: #F2F8D6;
+  --hf-p-window-alt: #DEE4C4;
+  --hf-window-text: #171D0A;
+  --hf-window-muted: #36451A;
+  --hf-p-chip-bg: #DEE4C4;
+  --hf-p-chip-hover: #D1D7B7;
+  --hf-window-hover: rgba(23, 29, 10, 0.06);
+  --hf-chip-text: #222B10;
+  --hf-invert-bg: #171D0A;
+  --hf-invert-hover: #333827;
+  --hf-invert-text: #CFE27A;
+  --hf-hover: rgba(23, 29, 10, 0.09);
+  --hf-active: rgba(23, 29, 10, 0.16);
+  --hf-p-highlight: #FF85C0;
+  --hf-p-highlight-text: #171D0A;
+  --hf-p-tag-bg: var(--hf-chip-bg);
+  --hf-p-tag-bg-hover: #3FA9F5;
+  --hf-p-tag-text: var(--hf-chip-text);
+  --hf-p-tag-text-hover: #021624;
+  --hf-p-selection: rgba(255, 133, 192, 0.45);
+  --hf-p-guide-color: #4A6600;
+  --hf-dot-glow-color: #FF85C0;
+  --hf-error: #7E1A2B;
+  --hf-cover: rgba(23, 29, 10, 0.2);
+  --hf-p-accent: #3FA9F5;
+  --text-highlight-bg-rgb: 255, 133, 192;
+}
+
+body.theme-dark.hf-preset-acid {
+  --hf-p-desk: #0A0E05;
+  --hf-p-dot-ink: rgb(207 226 122 / 0.26);
+  --hf-p-paper-bg: #11170A;
+  --hf-p-paper-alt: #161E0D;
+  --hf-p-heading: #D9EBA8;
+  --hf-p-text: #C6DB8E;
+  --hf-text-strong: #EAF5C6;
+  --hf-text-muted: #A7BE72;
+  --hf-text-faint: #98AF63;
+  --hf-rule: rgba(207, 226, 122, 0.16);
+  --hf-rule-strong: rgba(207, 226, 122, 0.36);
+  --hf-p-line: #070A03;
+  --hf-stroke: #A0AF5E;
+  --hf-stroke-soft: rgba(160, 175, 94, 0.5);
+  --hf-code-chip-bg: #070A03;
+  --hf-code-chip-text: #C8E86C;
+  --hf-p-bar: #070A03;
+  --hf-p-bar-text: #CFE27A;
+  --hf-p-bar-text-dim: #87944F;
+  --hf-p-bar-hover: rgba(207, 226, 122, 0.12);
+  --hf-p-bar-solid-hover: #1F2411;
+  --hf-p-window: #1B2510;
+  --hf-p-window-alt: #243117;
+  --hf-window-text: #D4E5A4;
+  --hf-window-muted: #A7BE72;
+  --hf-window-hover: rgba(207, 226, 122, 0.07);
+  --hf-p-chip-bg: #243117;
+  --hf-p-chip-hover: #2D3C1D;
+  --hf-chip-text: #D4E5A4;
+  --hf-invert-bg: #B9E04A;
+  --hf-invert-hover: #C8E86C;
+  --hf-invert-text: #070A03;
+  --hf-hover: rgba(207, 226, 122, 0.08);
+  --hf-active: rgba(207, 226, 122, 0.14);
+  --hf-p-highlight: #FF7DB8;
+  --hf-p-highlight-text: #070A03;
+  --hf-p-tag-bg: #46AEF5;
+  --hf-p-tag-bg-hover: #6CC0F7;
+  --hf-p-tag-text: #021624;
+  --hf-p-tag-text-hover: #021624;
+  --hf-p-selection: rgba(185, 224, 74, 0.35);
+  --hf-p-guide-color: #CFE27A;
+  --hf-error: #F08FA0;
+  --hf-cover: rgba(10, 14, 5, 0.55);
+  --hf-p-accent: #46AEF5;
+  --text-highlight-bg-rgb: 255, 125, 184;
+  --accent-h: 76;
+  --accent-s: 71%;
+  --accent-l: 58%;
+}
+
+body.theme-light.hf-preset-tangerine {
+  --hf-p-desk: #F6AE74;
+  --hf-p-dot-ink: rgb(35 21 11 / 0.6);
+  --hf-p-paper-bg: #F6AE74;
+  --hf-p-paper-alt: #E5A26C;
+  --hf-p-heading: #3A2010;
+  --hf-p-text: #3A2010;
+  --hf-text-strong: #1F0F05;
+  --hf-text-muted: #5A2C0F;
+  --hf-text-faint: #663313;
+  --hf-rule: rgba(35, 21, 11, 0.26);
+  --hf-rule-strong: rgba(35, 21, 11, 0.5);
+  --hf-p-line: #23150B;
+  --hf-stroke: #23150B;
+  --hf-stroke-soft: #23150B;
+  --hf-code-chip-bg: #23150B;
+  --hf-code-chip-text: #F6AE74;
+  --hf-p-bar: #23150B;
+  --hf-p-bar-text: #F4F4F4;
+  --hf-p-bar-text-dim: #A9A4A0;
+  --hf-p-bar-hover: rgba(255, 255, 255, 0.14);
+  --hf-p-bar-solid-hover: #3D3128;
+  --hf-p-window: #FDE6D3;
+  --hf-p-window-alt: #E9D3C1;
+  --hf-window-text: #23150B;
+  --hf-window-muted: #5A2C0F;
+  --hf-p-chip-bg: #E9D3C1;
+  --hf-p-chip-hover: #DCC7B5;
+  --hf-window-hover: rgba(35, 21, 11, 0.06);
+  --hf-chip-text: #3A2010;
+  --hf-invert-bg: #23150B;
+  --hf-invert-hover: #3D3128;
+  --hf-invert-text: #F6AE74;
+  --hf-hover: rgba(35, 21, 11, 0.09);
+  --hf-active: rgba(35, 21, 11, 0.16);
+  --hf-p-highlight: #6CD0F5;
+  --hf-p-highlight-text: #23150B;
+  --hf-p-tag-bg: var(--hf-chip-bg);
+  --hf-p-tag-bg-hover: #E8457A;
+  --hf-p-tag-text: var(--hf-chip-text);
+  --hf-p-tag-text-hover: #1A0510;
+  --hf-p-selection: rgba(108, 208, 245, 0.45);
+  --hf-p-guide-color: #7A2C00;
+  --hf-dot-glow-color: #6CD0F5;
+  --hf-error: #6E0E1E;
+  --hf-cover: rgba(35, 21, 11, 0.2);
+  --hf-p-accent: #E8457A;
+  --text-highlight-bg-rgb: 108, 208, 245;
+}
+
+body.theme-dark.hf-preset-tangerine {
+  --hf-p-desk: #150E09;
+  --hf-p-dot-ink: rgb(246 174 116 / 0.26);
+  --hf-p-paper-bg: #20160F;
+  --hf-p-paper-alt: #281C13;
+  --hf-p-heading: #F0DBC7;
+  --hf-p-text: #E2C9B3;
+  --hf-text-strong: #F9ECDF;
+  --hf-text-muted: #C6A88E;
+  --hf-text-faint: #B6987E;
+  --hf-rule: rgba(246, 174, 116, 0.16);
+  --hf-rule-strong: rgba(246, 174, 116, 0.36);
+  --hf-p-line: #0E0905;
+  --hf-stroke: #C0885B;
+  --hf-stroke-soft: rgba(192, 136, 91, 0.5);
+  --hf-code-chip-bg: #0E0905;
+  --hf-code-chip-text: #F7A566;
+  --hf-p-bar: #0E0905;
+  --hf-p-bar-text: #F6AE74;
+  --hf-p-bar-text-dim: #A2734C;
+  --hf-p-bar-hover: rgba(246, 174, 116, 0.12);
+  --hf-p-bar-solid-hover: #2A1D12;
+  --hf-p-window: #2F2217;
+  --hf-p-window-alt: #3B2C1F;
+  --hf-window-text: #EBD7C5;
+  --hf-window-muted: #C6A88E;
+  --hf-window-hover: rgba(246, 174, 116, 0.07);
+  --hf-p-chip-bg: #3B2C1F;
+  --hf-p-chip-hover: #463627;
+  --hf-chip-text: #EBD7C5;
+  --hf-invert-bg: #F59145;
+  --hf-invert-hover: #F7A566;
+  --hf-invert-text: #0E0905;
+  --hf-hover: rgba(246, 174, 116, 0.08);
+  --hf-active: rgba(246, 174, 116, 0.14);
+  --hf-p-highlight: #62C6EE;
+  --hf-p-highlight-text: #0E0905;
+  --hf-p-tag-bg: #EE5D8C;
+  --hf-p-tag-bg-hover: #F27DA2;
+  --hf-p-tag-text: #2A0512;
+  --hf-p-tag-text-hover: #2A0512;
+  --hf-p-selection: rgba(245, 145, 69, 0.35);
+  --hf-p-guide-color: #F6AE74;
+  --hf-error: #F29A9A;
+  --hf-cover: rgba(21, 14, 9, 0.55);
+  --hf-p-accent: #EE5D8C;
+  --text-highlight-bg-rgb: 98, 198, 238;
+  --accent-h: 26;
+  --accent-s: 90%;
+  --accent-l: 62%;
+}
+
+body.theme-light.hf-preset-newsprint {
+  --hf-p-desk: #D8D5CC;
+  --hf-p-dot-ink: rgb(27 26 24 / 0.6);
+  --hf-p-paper-bg: #D8D5CC;
+  --hf-p-paper-alt: #C9C6BE;
+  --hf-p-heading: #262522;
+  --hf-p-text: #262522;
+  --hf-text-strong: #111110;
+  --hf-text-muted: #3D3B37;
+  --hf-text-faint: #4A4843;
+  --hf-rule: rgba(27, 26, 24, 0.26);
+  --hf-rule-strong: rgba(27, 26, 24, 0.5);
+  --hf-p-line: #1B1A18;
+  --hf-stroke: #1B1A18;
+  --hf-stroke-soft: #1B1A18;
+  --hf-code-chip-bg: #1B1A18;
+  --hf-code-chip-text: #D8D5CC;
+  --hf-p-bar: #1B1A18;
+  --hf-p-bar-text: #F4F4F4;
+  --hf-p-bar-text-dim: #A6A6A5;
+  --hf-p-bar-hover: rgba(255, 255, 255, 0.14);
+  --hf-p-bar-solid-hover: #363534;
+  --hf-p-window: #F1EFE9;
+  --hf-p-window-alt: #DEDCD6;
+  --hf-window-text: #1B1A18;
+  --hf-window-muted: #3D3B37;
+  --hf-p-chip-bg: #DEDCD6;
+  --hf-p-chip-hover: #D1CFCA;
+  --hf-window-hover: rgba(27, 26, 24, 0.06);
+  --hf-chip-text: #262522;
+  --hf-invert-bg: #1B1A18;
+  --hf-invert-hover: #363534;
+  --hf-invert-text: #D8D5CC;
+  --hf-hover: rgba(27, 26, 24, 0.09);
+  --hf-active: rgba(27, 26, 24, 0.16);
+  --hf-p-highlight: #F8E04E;
+  --hf-p-highlight-text: #1B1A18;
+  --hf-p-tag-bg: var(--hf-chip-bg);
+  --hf-p-tag-bg-hover: #E04848;
+  --hf-p-tag-text: var(--hf-chip-text);
+  --hf-p-tag-text-hover: #140404;
+  --hf-p-selection: rgba(248, 224, 78, 0.45);
+  --hf-p-guide-color: #A8221B;
+  --hf-dot-glow-color: #F8E04E;
+  --hf-error: #9A1B1B;
+  --hf-cover: rgba(27, 26, 24, 0.2);
+  --hf-p-accent: #E04848;
+  --text-highlight-bg-rgb: 248, 224, 78;
+}
+
+body.theme-dark.hf-preset-newsprint {
+  --hf-p-desk: #111111;
+  --hf-p-dot-ink: rgb(216 213 204 / 0.26);
+  --hf-p-paper-bg: #1A1A19;
+  --hf-p-paper-alt: #222221;
+  --hf-p-heading: #DCDAD3;
+  --hf-p-text: #C8C6BF;
+  --hf-text-strong: #EEECE6;
+  --hf-text-muted: #A8A69F;
+  --hf-text-faint: #98968F;
+  --hf-rule: rgba(216, 213, 204, 0.16);
+  --hf-rule-strong: rgba(216, 213, 204, 0.36);
+  --hf-p-line: #0B0B0B;
+  --hf-stroke: #A8A69F;
+  --hf-stroke-soft: rgba(168, 166, 159, 0.5);
+  --hf-code-chip-bg: #0B0B0B;
+  --hf-code-chip-text: #E8E6DF;
+  --hf-p-bar: #0B0B0B;
+  --hf-p-bar-text: #D8D5CC;
+  --hf-p-bar-text-dim: #8E8C87;
+  --hf-p-bar-hover: rgba(216, 213, 204, 0.12);
+  --hf-p-bar-solid-hover: #242322;
+  --hf-p-window: #262625;
+  --hf-p-window-alt: #303030;
+  --hf-window-text: #D7D5CF;
+  --hf-window-muted: #A8A69F;
+  --hf-window-hover: rgba(216, 213, 204, 0.07);
+  --hf-p-chip-bg: #303030;
+  --hf-p-chip-hover: #3A3A39;
+  --hf-chip-text: #D7D5CF;
+  --hf-invert-bg: #D8D5CC;
+  --hf-invert-hover: #E8E6DF;
+  --hf-invert-text: #0B0B0B;
+  --hf-hover: rgba(216, 213, 204, 0.08);
+  --hf-active: rgba(216, 213, 204, 0.14);
+  --hf-p-highlight: #EBD246;
+  --hf-p-highlight-text: #0B0B0B;
+  --hf-p-tag-bg: #E05A5A;
+  --hf-p-tag-bg-hover: #E87B7B;
+  --hf-p-tag-text: #1F0303;
+  --hf-p-tag-text-hover: #1F0303;
+  --hf-p-selection: rgba(216, 213, 204, 0.35);
+  --hf-p-guide-color: #D8D5CC;
+  --hf-error: #F09A9A;
+  --hf-cover: rgba(17, 17, 17, 0.55);
+  --hf-p-accent: #E05A5A;
+  --text-highlight-bg-rgb: 235, 210, 70;
+  --accent-h: 45;
+  --accent-s: 13%;
+  --accent-l: 82%;
+}
+
+/* ---------- Custom colours ----------
+   Style Settings > Halftone > Custom colours. A picker writes its --hf-custom-* variable on
+   the body, for its own mode, only once a colour is picked; until then every slot keeps
+   the preset's value (--hf-p-*). A colour worked out from a picked one (--hf-c-*) names it
+   without a fallback, so while nothing is picked it is invalid and hands over to the
+   preset too. Text on a picked bar, highlight or tag turns white or black, whichever
+   reads: the OKLCH lightness switch the callout icons use. Declared on the mode classes,
+   not just the body, so an element that carries a mode of its own (Style Settings draws
+   each dark-mode picker inside a .theme-dark box) works its colours out from that mode. */
+.theme-light,
+.theme-dark {
+  --hf-desk: var(--hf-custom-desk, var(--hf-p-desk));
+  --hf-c-on-desk: oklch(from var(--hf-custom-desk) clamp(0, (0.64 - l) * 1000, 1) 0 0);
+  --hf-dot-ink: var(--hf-custom-dots, var(--hf-p-dot-ink));
+  /* One dot in the corner of each tile, which is three device pixels wide (section 1's ladder) */
+  --hf-dots: conic-gradient(at 33.3333% 33.3333%, transparent 75%, var(--hf-dot-ink) 0);
+
+  --hf-paper-bg: var(--hf-custom-paper, var(--hf-p-paper-bg));
+  --hf-c-paper-alt: color-mix(in srgb, var(--hf-custom-paper) 92%, var(--hf-p-text));
+  --hf-paper-alt: var(--hf-c-paper-alt, var(--hf-p-paper-alt));
+
+  --hf-text: var(--hf-custom-text, var(--hf-p-text));
+  --hf-heading: var(--hf-custom-text, var(--hf-p-heading));
+
+  --hf-window: var(--hf-custom-window, var(--hf-p-window));
+  --hf-c-window-alt: color-mix(in srgb, var(--hf-custom-window) 90%, var(--hf-p-text));
+  --hf-window-alt: var(--hf-c-window-alt, var(--hf-p-window-alt));
+  --hf-chip-bg: var(--hf-c-window-alt, var(--hf-p-chip-bg));
+  --hf-c-chip-hover: color-mix(in srgb, var(--hf-custom-window) 84%, var(--hf-p-text));
+  --hf-chip-hover: var(--hf-c-chip-hover, var(--hf-p-chip-hover));
+
+  --hf-bar: var(--hf-custom-bar, var(--hf-p-bar));
+  --hf-line: var(--hf-custom-bar, var(--hf-p-line));
+  --hf-c-bar-text: oklch(from var(--hf-custom-bar) clamp(0, (0.64 - l) * 1000, 1) 0 0);
+  --hf-bar-text: var(--hf-c-bar-text, var(--hf-p-bar-text));
+  --hf-c-bar-text-dim: color-mix(in srgb, var(--hf-c-bar-text) 64%, var(--hf-custom-bar));
+  --hf-bar-text-dim: var(--hf-c-bar-text-dim, var(--hf-p-bar-text-dim));
+  --hf-c-bar-hover: color-mix(in srgb, var(--hf-c-bar-text) 14%, transparent);
+  --hf-bar-hover: var(--hf-c-bar-hover, var(--hf-p-bar-hover));
+  --hf-c-bar-solid-hover: color-mix(in srgb, var(--hf-custom-bar) 86%, var(--hf-c-bar-text));
+  --hf-bar-solid-hover: var(--hf-c-bar-solid-hover, var(--hf-p-bar-solid-hover));
+
+  --hf-highlight: var(--hf-custom-highlight, var(--hf-p-highlight));
+  --hf-c-highlight-text: oklch(from var(--hf-custom-highlight) clamp(0, (0.64 - l) * 1000, 1) 0 0);
+  --hf-highlight-text: var(--hf-c-highlight-text, var(--hf-p-highlight-text));
+  --hf-c-selection: color-mix(in srgb, var(--hf-custom-highlight) 40%, transparent);
+  --hf-selection: var(--hf-c-selection, var(--hf-p-selection));
+
+  --hf-accent: var(--hf-custom-accent, var(--hf-p-accent));
+  --hf-c-on-accent: oklch(from var(--hf-custom-accent) clamp(0, (0.64 - l) * 1000, 1) 0 0);
+  --hf-tag-bg: var(--hf-p-tag-bg);
+  --hf-tag-bg-hover: var(--hf-custom-accent, var(--hf-p-tag-bg-hover));
+  --hf-tag-text: var(--hf-p-tag-text);
+  --hf-tag-text-hover: var(--hf-c-on-accent, var(--hf-p-tag-text-hover));
+
+  --hf-guide-color: var(--hf-custom-guide, var(--hf-p-guide-color));
+}
+
+/* In dark mode a tag wears the accent at rest and lightens on hover */
+.theme-dark {
+  --hf-tag-bg: var(--hf-custom-accent, var(--hf-p-tag-bg));
+  --hf-c-accent-hover: color-mix(in srgb, var(--hf-custom-accent) 82%, white);
+  --hf-tag-bg-hover: var(--hf-c-accent-hover, var(--hf-p-tag-bg-hover));
+  --hf-tag-text: var(--hf-c-on-accent, var(--hf-p-tag-text));
 }
 
 /* Dot grid pinned to whole screen pixels at common densities and zoom levels */
@@ -774,7 +1578,7 @@ body.hf-no-dots.theme-dark {
 
   --caret-color: var(--hf-text-strong);
   --divider-color: var(--hf-line);
-  --divider-color-hover: var(--hf-magenta);
+  --divider-color-hover: var(--hf-accent);
   --divider-width-hover: 3px;
 
   /* No shadows anywhere. Rings (0 0 0 Npx) and inset outlines are borders, so they stay.
@@ -913,7 +1717,7 @@ body.hf-no-dots.theme-dark {
   --table-row-background-hover: var(--hf-window);
   --table-row-alt-background-hover: var(--hf-window);
   --table-column-alt-background: var(--hf-window);
-  --table-selection: color-mix(in srgb, var(--hf-teal) 30%, transparent);
+  --table-selection: color-mix(in srgb, var(--hf-highlight) 30%, transparent);
   --table-selection-border-color: var(--hf-stroke);
   --table-drag-handle-background-active: var(--hf-stroke);
 
@@ -1257,9 +2061,10 @@ body:not(.hf-gaps) .workspace-split.mod-sidedock {
   display: none;
 }
 
-/* Ribbon */
+/* Ribbon. It sits on the desk, which is the paper's colour in every preset; a picked desk
+   colour may not be, so its icons turn white or black, whichever reads on it. */
 .workspace-ribbon:is(.mod-left, .mod-primary) .side-dock-ribbon-action {
-  --icon-color: var(--hf-text);
+  --icon-color: var(--hf-c-on-desk, var(--hf-text));
   --icon-color-hover: var(--hf-invert-text);
 }
 
@@ -1697,13 +2502,23 @@ body.hf-centre-title .inline-title {
   text-decoration: none;
 }
 
+/* A link to a note not yet created: Obsidian colours it on hover with --link-color-hover and
+   underlines it again, at (0,4,0), which outranked the inversion above. The text took the
+   strong ink, the colour of the chip under it, and vanished. One class more wins it back. */
+.markdown-rendered a.internal-link.is-unresolved:hover,
+.metadata-container a.internal-link.is-unresolved:hover {
+  color: var(--hf-invert-text);
+  text-decoration: none;
+}
+
 /* Bases: the same inversion, but only for a real pointer. On a touch screen :hover lands
    on whatever a finger touches, so while you scroll a table the inverted link, and
    Obsidian's row highlight, jumped to each row under your finger. Obsidian's other Bases
    hover effects already wait for (hover: hover); these now match. */
 @media (hover: hover) {
   .bases-view a.internal-link:hover,
-  .bases-view a.external-link:hover {
+  .bases-view a.external-link:hover,
+  .bases-view a.internal-link.is-unresolved:hover {
     background-color: var(--hf-invert-bg);
     color: var(--hf-invert-text);
     text-decoration: none;
@@ -1802,6 +2617,7 @@ body:not(.hf-no-dots) .bases-view .bases-td + .bases-td {
 /* Hovered links in a highlight invert against the teal (the usual hover is teal in dark mode),
    and drop the filter, which would black out the hover background as well */
 .markdown-rendered mark a.internal-link:hover,
+.markdown-rendered mark a.internal-link.is-unresolved:hover,
 .markdown-rendered mark a.external-link:hover,
 .markdown-source-view.mod-cm6 .cm-highlight.cm-hmd-internal-link:hover,
 .markdown-source-view.mod-cm6 .cm-highlight.cm-link:hover,
@@ -2447,13 +3263,25 @@ select:focus,
   background-color: var(--hf-window);
 }
 
-/* New tab: the halftone blob, faded by a wash of paper laid over it (--hf-blob-opacity) */
-.workspace-leaf-content[data-type="empty"] .view-content {
-  --hf-blob-wash: color-mix(in srgb, var(--hf-paper-bg) calc((1 - var(--hf-blob-opacity)) * 100%), transparent);
-  background-image: linear-gradient(var(--hf-blob-wash), var(--hf-blob-wash)), var(--hf-blob);
-  background-repeat: no-repeat;
-  background-position: 0 0, center bottom;
-  background-size: 100% 100%, 1400px 900px;
+/* New tab: the halftone blob, printed in the desk's dot ink at --hf-blob-opacity. The blob is a
+   mask over a layer of that ink, so a preset or a picked dot colour recolours it. The ink
+   is used solid here: the opacity, not the dots' own alpha, fades it. The layer hangs from
+   .empty-state, which Obsidian already places over the whole leaf: positioning .view-content
+   instead moved that box, and the buttons in it dropped by the header's height. */
+.workspace-leaf-content[data-type="empty"] .empty-state {
+  isolation: isolate;
+}
+
+body:not(.hf-no-dots) .workspace-leaf-content[data-type="empty"] .empty-state::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: rgb(from var(--hf-dot-ink) r g b / 1);
+  opacity: var(--hf-blob-opacity);
+  -webkit-mask: var(--hf-blob) no-repeat center bottom / 1400px 900px;
+  mask: var(--hf-blob) no-repeat center bottom / 1400px 900px;
 }
 
 .empty-state-title {
@@ -2526,13 +3354,14 @@ body.is-mobile.is-floating-nav {
 /* On a phone or tablet the black is graphite, the theme's matte dark grey: on a small
    bright screen the near-black of the bars, frames, labels and inverted rows reads as
    pure black. Light papers only. In dark mode graphite is the paper itself, and the
-   bars would disappear into it. */
-body.is-mobile.theme-light {
-  --hf-line: var(--hf-graphite);
+   bars would disappear into it. The Halftone preset only: the others tint their ink
+   to their own hue, which graphite would undo. */
+body.is-mobile.theme-light:is(.hf-preset-halftone, :not([class*="hf-preset-"])) {
+  --hf-p-line: var(--hf-graphite);
   --hf-stroke: var(--hf-graphite);
   --hf-stroke-soft: var(--hf-graphite);
   --hf-code-chip-bg: var(--hf-graphite);
-  --hf-bar: var(--hf-graphite);
+  --hf-p-bar: var(--hf-graphite);
   --hf-invert-bg: var(--hf-graphite);
 }
 
@@ -2820,9 +3649,32 @@ body:not(.is-phone) .vertical-tab-header .vertical-tab-nav-item.is-active,
   --text-muted: var(--hf-bar-text-dim);
   --text-faint: var(--hf-bar-text-dim);
   --text-error: var(--hf-bar-error);
+  /* Every link colour, not just --link-color: a callout sets the external one to the
+     window ink, and the body sets the unresolved one, both near black in light mode */
   --link-color: var(--hf-bar-text);
+  --link-color-hover: var(--hf-bar-text);
+  --link-external-color: var(--hf-bar-text);
+  --link-external-color-hover: var(--hf-bar-text);
+  --link-unresolved-color: var(--hf-bar-text-dim);
+  --link-unresolved-decoration-color: var(--hf-bar-text-dim);
   --collapse-icon-color: var(--hf-bar-text-dim);
   --collapse-icon-color-collapsed: var(--hf-bar-text);
+}
+
+/* A hovered link in a bar inverts against the bar: the usual hover chip is the bar's
+   own black in light mode, so it vanished and left pale text on black */
+.callout-title a.internal-link:hover,
+.callout-title a.internal-link.is-unresolved:hover,
+.callout-title a.external-link:hover,
+.markdown-rendered th a.internal-link:hover,
+.markdown-rendered th a.internal-link.is-unresolved:hover,
+.markdown-rendered th a.external-link:hover,
+.markdown-source-view.mod-cm6 .cm-table-widget th a.internal-link:hover,
+.markdown-source-view.mod-cm6 .cm-table-widget th a.internal-link.is-unresolved:hover,
+.markdown-source-view.mod-cm6 .cm-table-widget th a.external-link:hover {
+  background-color: var(--hf-bar-text);
+  color: var(--hf-bar);
+  text-decoration: none;
 }
 
 .workspace-tab-header-container .workspace-tab-header:not(.is-active):hover {
