@@ -1,4 +1,4 @@
-/* Halftone 1.0.3 | DuckTapeKiller | https://github.com/DuckTapeKiller | MIT
+/* Halftone 1.0.4 | DuckTapeKiller | https://github.com/DuckTapeKiller | MIT
  * Pink halftone paper, black window title bars, pixel labels.
  * Grotesk and mono come from macOS (Helvetica Neue, SF Mono). No network requests.
  */
@@ -151,6 +151,23 @@ settings:
             -
                 label: Arrow down to dot
                 value: hf-marker-arrow-dot
+    -
+        id: hf-checkbox
+        title: Checkbox
+        description: How a ticked checkbox looks, in tasks, tables, Properties and dialogs
+        type: class-select
+        allowEmpty: false
+        default: hf-checkbox-misprint
+        options:
+            -
+                label: Misprint, a block of the accent colour printed off-register (default)
+                value: hf-checkbox-misprint
+            -
+                label: Ink square with a dot
+                value: hf-checkbox-dot
+            -
+                label: Ink square with a tick
+                value: hf-checkbox-tick
     -
         id: hf-custom-colours
         title: Custom colours
@@ -2648,7 +2665,61 @@ body:not(.hf-no-dots) .bases-view .bases-td + .bases-td {
 
 /* Checkboxes */
 input[type="checkbox"] {
-  border-width: 1.5px;
+  border-width: var(--hf-checkbox-border);
+}
+
+/* A ticked checkbox (Style Settings > Halftone > Checkbox). Obsidian fills the box with
+   --checkbox-color and draws its tick as a mask on ::after, placed 1px out for its own 1px
+   border. Here the marks fill the box inside its border instead (inset: 0), so they centre
+   whatever the border rounds to: at 1x a 1.5px border draws as 1px, and a mark offset by
+   1.5px sat half a pixel high and left, a whole pixel on some rows.
+   Misprint, the default, drops the fill and the mark: a block of the accent colour printed
+   off-register, under an outline. Both are outlines round the inner box, which snap to the
+   same pixels as the border they replace. Dot keeps the ink fill and masks a dot. Tick
+   leaves Obsidian's own rule alone. */
+body {
+  --hf-checkbox-border: 1.5px;
+  /* Whole pixels, and moved by position rather than translate: a transform is not snapped
+     to the pixel grid, so a 3.4px shift printed the block with soft edges */
+  --hf-misprint-offset: round(calc(var(--checkbox-size) * 0.2), 1px);
+}
+
+body:not(.hf-checkbox-tick) input[type="checkbox"]:checked::after {
+  inset: 0;
+  width: auto;
+  height: auto;
+}
+
+body:not(.hf-checkbox-dot):not(.hf-checkbox-tick) input[type="checkbox"]:checked {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+body:not(.hf-checkbox-dot):not(.hf-checkbox-tick) input[type="checkbox"]:checked::before {
+  content: "";
+  position: absolute;
+  top: var(--hf-misprint-offset);
+  left: var(--hf-misprint-offset);
+  right: calc(var(--hf-misprint-offset) * -1);
+  bottom: calc(var(--hf-misprint-offset) * -1);
+  background-color: var(--hf-accent);
+  outline: var(--hf-checkbox-border) solid var(--hf-accent);
+}
+
+body:not(.hf-checkbox-dot):not(.hf-checkbox-tick) input[type="checkbox"]:checked::after {
+  background-color: transparent;
+  outline: var(--hf-checkbox-border) solid var(--checkbox-border-color);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+body.hf-checkbox-dot input[type="checkbox"]:checked::after {
+  -webkit-mask-image: radial-gradient(closest-side, #000 calc(60% - 0.5px), transparent 60%);
+  mask-image: radial-gradient(closest-side, #000 calc(60% - 0.5px), transparent 60%);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
 }
 
 /* Horizontal rule: a band of halftone */
