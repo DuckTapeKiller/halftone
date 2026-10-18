@@ -1,4 +1,4 @@
-/* Halftone 1.0.4 | DuckTapeKiller | https://github.com/DuckTapeKiller | MIT
+/* Halftone 1.0.5 | DuckTapeKiller | https://github.com/DuckTapeKiller | MIT
  * Pink halftone paper, black window title bars, pixel labels.
  * Grotesk and mono come from macOS (Helvetica Neue, SF Mono). No network requests.
  */
@@ -187,7 +187,7 @@ settings:
     -
         id: hf-custom-dots
         title: Dots
-        description: The halftone dots on the desk, horizontal rules, dashboard cards and the backdrop behind dialogs, and the blob on a new tab. Its opacity sets how strong they print
+        description: The halftone dots on the desk, dashboard cards and the backdrop behind dialogs, and the blob on a new tab. Its opacity sets how strong they print
         type: variable-themed-color
         format: hex
         opacity: true
@@ -1410,6 +1410,28 @@ body.theme-dark.hf-preset-newsprint {
   --hf-tag-text-hover: var(--hf-c-on-accent, var(--hf-p-tag-text-hover));
 
   --hf-guide-color: var(--hf-custom-guide, var(--hf-p-guide-color));
+
+  /* Obsidian 1.14's highlight colours (==🟡text==) as solid inks, in the punch-card
+     style of the theme's own highlight, where Obsidian paints 30% tints. Each takes
+     its hue from the theme's --color-*, so the six stay Halftone's colours in every
+     preset and mode, and the lightness of the default teal (0.68), so all seven
+     carry the same weight. Black text reads at 6.8:1 or better on every one, and
+     each stands as far from the paper as the presets' own highlights do, except
+     red and orange on pink paper (below). */
+  --highlight-background-red: oklch(from var(--color-red) 0.68 0.14 h);
+  --highlight-background-orange: oklch(from var(--color-orange) 0.68 0.14 h);
+  --highlight-background-yellow: oklch(from var(--color-yellow) 0.68 0.14 h);
+  --highlight-background-green: oklch(from var(--color-green) 0.68 0.14 h);
+  --highlight-background-blue: oklch(from var(--color-blue) 0.68 0.14 h);
+  --highlight-background-purple: oklch(from var(--color-purple) 0.68 0.14 h);
+}
+
+/* On pink paper a red or orange ink would vanish into the page, so those two turn
+   pale: a highlight that reads by lightness instead. A note sits on the paper
+   whatever the window colour, and the other presets bring paper of their own. */
+body.theme-light.hf-paper-pink:is(.hf-preset-halftone, :not([class*="hf-preset-"])) {
+  --highlight-background-red: oklch(from var(--color-red) 0.9 0.06 h);
+  --highlight-background-orange: oklch(from var(--color-orange) 0.9 0.07 h);
 }
 
 /* In dark mode a tag wears the accent at rest and lightens on hover */
@@ -2614,21 +2636,35 @@ body:not(.hf-no-dots) .bases-view .bases-td + .bases-td {
   letter-spacing: 0.02em;
 }
 
-/* Highlights in punch-card teal. Links inside take the highlight's ink: dark mode's pale link colour vanishes on teal.
+/* Highlights in punch-card teal. The background comes from --highlight-background,
+   as in Obsidian: the preset's highlight for plain ==text== (through
+   --text-highlight-bg), and a colour's own ink for ==🟡text==. Setting the background
+   outright would paint every colour teal.
+   Links inside take the highlight's ink: dark mode's pale link colour vanishes on teal.
    Obsidian colours internal links in a highlight with --text-normal, so that changes too.
    The external-link arrow is a fixed grey image, so only a filter can darken it. */
 .markdown-rendered mark,
 .markdown-source-view.mod-cm6 .cm-highlight {
-  --text-normal: var(--hf-highlight-text);
+  --hf-mark-text: var(--hf-highlight-text);
+  --text-normal: var(--hf-mark-text);
   --link-external-filter: brightness(0);
-  --link-color: var(--hf-highlight-text);
-  --link-color-hover: var(--hf-highlight-text);
-  --link-external-color: var(--hf-highlight-text);
-  --link-external-color-hover: var(--hf-highlight-text);
-  --link-unresolved-color: var(--hf-highlight-text);
-  --link-unresolved-decoration-color: var(--hf-highlight-text);
-  background-color: var(--hf-highlight);
-  color: var(--hf-highlight-text);
+  --link-color: var(--hf-mark-text);
+  --link-color-hover: var(--hf-mark-text);
+  --link-external-color: var(--hf-mark-text);
+  --link-external-color-hover: var(--hf-mark-text);
+  --link-unresolved-color: var(--hf-mark-text);
+  --link-unresolved-decoration-color: var(--hf-mark-text);
+  background-color: var(--highlight-background);
+  color: var(--hf-mark-text);
+}
+
+/* A coloured highlight takes white or black text from its own ink, by the OKLCH
+   lightness switch the theme uses elsewhere: the preset's highlight ink is tuned
+   for the preset's highlight, not for six other colours. The colours are named
+   because Obsidian gives a plain highlight an empty data-highlight. */
+.markdown-rendered mark:is([data-highlight="red"], [data-highlight="orange"], [data-highlight="yellow"], [data-highlight="green"], [data-highlight="blue"], [data-highlight="purple"]),
+.markdown-source-view.mod-cm6 .cm-highlight:is(.cm-highlight-red, .cm-highlight-orange, .cm-highlight-yellow, .cm-highlight-green, .cm-highlight-blue, .cm-highlight-purple) {
+  --hf-mark-text: oklch(from var(--highlight-background) clamp(0, (0.64 - l) * 1000, 1) 0 0);
 }
 
 /* Hovered links in a highlight invert against the teal (the usual hover is teal in dark mode),
@@ -2640,14 +2676,49 @@ body:not(.hf-no-dots) .bases-view .bases-td + .bases-td {
 .markdown-source-view.mod-cm6 .cm-highlight.cm-link:hover,
 .markdown-source-view.mod-cm6 .cm-highlight.cm-url:hover {
   --link-external-filter: none;
-  background-color: var(--hf-highlight-text);
-  color: var(--hf-highlight);
+  background-color: var(--hf-mark-text);
+  color: var(--highlight-background);
 }
 
 .markdown-source-view.mod-cm6 .cm-highlight.cm-hmd-internal-link:hover .cm-underline,
 .markdown-source-view.mod-cm6 .cm-highlight.cm-link:hover .cm-underline,
 .markdown-source-view.mod-cm6 .cm-highlight.cm-url:hover .cm-underline {
-  color: var(--hf-highlight);
+  color: var(--highlight-background);
+}
+
+/* In Live Preview the external-link arrow is a span of its own, and inside a
+   highlight it carries the highlight's background: the darkening filter turned
+   the whole of it into a black box. It keeps the highlight and drops the filter. */
+.markdown-source-view.mod-cm6 .cm-highlight.cm-url.external-link {
+  --link-external-filter: none;
+}
+
+/* A swatch shows the ink its colour writes, wherever one is drawn: Obsidian's
+   highlight menu and suggester, and plugins that use .highlight-swatch. The one in
+   the editor's colour widget keeps the theme colour, or it would vanish into the
+   highlight it sits on. */
+body :not(.cm-highlight-color-widget) > .highlight-swatch[data-highlight="red"] {
+  background-color: var(--highlight-background-red);
+}
+
+body :not(.cm-highlight-color-widget) > .highlight-swatch[data-highlight="orange"] {
+  background-color: var(--highlight-background-orange);
+}
+
+body :not(.cm-highlight-color-widget) > .highlight-swatch[data-highlight="yellow"] {
+  background-color: var(--highlight-background-yellow);
+}
+
+body :not(.cm-highlight-color-widget) > .highlight-swatch[data-highlight="green"] {
+  background-color: var(--highlight-background-green);
+}
+
+body :not(.cm-highlight-color-widget) > .highlight-swatch[data-highlight="blue"] {
+  background-color: var(--highlight-background-blue);
+}
+
+body :not(.cm-highlight-color-widget) > .highlight-swatch[data-highlight="purple"] {
+  background-color: var(--highlight-background-purple);
 }
 
 /* Inline code: a black label */
@@ -2722,27 +2793,16 @@ body.hf-checkbox-dot input[type="checkbox"]:checked::after {
   mask-position: 0 0;
 }
 
-/* Horizontal rule: a band of halftone */
+/* Horizontal rule: one solid line in the line-art colour (--hr-color, --hr-thickness in
+   section 2), square at both ends. It replaced a band of halftone that faded out at the ends. */
 .markdown-rendered hr,
 .markdown-source-view.mod-cm6 hr {
-  height: 9px;
+  height: 0;
   border: 0;
-  border-top: 0;
-  background-color: transparent;
-  background-image: var(--hf-dots);
-  background-size: var(--hf-dot-pitch) var(--hf-dot-pitch);
-  image-rendering: pixelated;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  border-top: var(--hr-thickness) solid var(--hr-color);
+  background: none;
 }
 
-body.hf-no-dots .markdown-rendered hr,
-body.hf-no-dots .markdown-source-view.mod-cm6 hr {
-  height: 0;
-  border-top: var(--hf-frame) solid var(--hf-line);
-  -webkit-mask-image: none;
-  mask-image: none;
-}
 
 /* ---------- Code blocks are windows ---------- */
 .markdown-rendered pre {

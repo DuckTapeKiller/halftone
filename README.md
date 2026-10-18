@@ -103,7 +103,7 @@ At the end of the Halftone settings, **Custom colours** has nine pickers, each w
 | Colour | What it paints |
 | --- | --- |
 | Desk | Behind and between the windows |
-| Dots | The halftone dots on the desk, horizontal rules, dashboard cards and the backdrop behind dialogs, and the blob on a new tab |
+| Dots | The halftone dots on the desk, dashboard cards and the backdrop behind dialogs, and the blob on a new tab |
 | Paper | The note and the sidebars |
 | Text | Body text and headings |
 | Windows | Callouts, properties, code blocks, tables, fields and menus |
@@ -124,10 +124,11 @@ The note itself reads like a printed page, and everything around it looks like t
 - **The note title sits inside crop marks**, like a proof sheet. Style Settings can hide them or centre the title.
 - **Headings**: H1 to H3 are set in the text face with tight tracking. H4 is a black label chip, H5 a mono column label with a rule on its left, and H6 a caption in capitals.
 - **Highlights are punch-card teal**, or the preset's highlight colour. Links inside a highlight take the highlight's ink, so they stay readable in both modes.
+- **Coloured highlights** (Obsidian's red, orange, yellow, green, blue and purple) are printed as solid inks of the same weight as the default, so each one stands out on every paper, and their text switches between black and white to stay readable.
 - **Inline code is a black label**, and tags are chips that take the accent colour when you point at them.
 - **Links invert when you point at them**, like a selected menu item. Links to notes that don't exist yet are muted, with a dashed underline, and invert the same way.
 - **Links in a title bar** (a callout title, a table header) are drawn in the bar's own light ink, and invert against the bar.
-- **Horizontal rules are a band of halftone**, and blockquotes carry a solid rule in the line-art colour.
+- **Horizontal rules are a solid line** in the line-art colour, square at both ends, and blockquotes carry a solid rule in the same colour.
 
 ## Checkboxes
 
