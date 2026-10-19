@@ -1,6 +1,10 @@
 <h1 align="center">Halftone</h1>
 
 <p align="center">
+  <a href="https://community.obsidian.md/themes/halftone"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/get-it-on-obsidian-dark.svg"><img alt="Get it on Obsidian" src="assets/get-it-on-obsidian.svg"></picture></a>
+</p>
+
+<p align="center">
   An Obsidian theme in the style of a retro desktop printed on paper:<br>
   black title bars, framed windows, pixel labels and a field of halftone dots.
 </p>
